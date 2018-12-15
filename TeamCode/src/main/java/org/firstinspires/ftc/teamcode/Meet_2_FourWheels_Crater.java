@@ -116,6 +116,8 @@ public class Meet_2_FourWheels_Crater extends LinearOpMode {
 
         robot.dt.encoderDrive(1, 4, 4);
         sleep(1000);
+        robot.dt.encoderDrive(1, 4, -4);
+        sleep(1000);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !done) {
@@ -204,6 +206,10 @@ public class Meet_2_FourWheels_Crater extends LinearOpMode {
 
     private void targetLeft()  {
         // build a profile to handle target on left
+        robot.dt.encoderDrive(1, -12.5, 12.5);
+        sleep(1000);
+        robot.dt.encoderDrive(1, 37, 37);
+        sleep(1000);
 
 
 
@@ -222,6 +228,10 @@ public class Meet_2_FourWheels_Crater extends LinearOpMode {
     private void targetRight() {
 
         // build a profile to handle target on right
+        robot.dt.encoderDrive(1, 3, -3);
+        sleep(1000);// wait for the previous motion to complete
+        robot.dt.encoderDrive(1, 33, 33);
+        sleep(1500);
 
 
 
@@ -232,9 +242,9 @@ public class Meet_2_FourWheels_Crater extends LinearOpMode {
     private void targetCenter() {
 
         // build a profile to handle target on right
-        robot.dt.encoderDrive(1, 3, -3);
+        robot.dt.encoderDrive(1, -5, 5); //turn to gold
         sleep(1000);
-        robot.dt.encoderDrive(1,-28, -28);
+        robot.dt.encoderDrive(1, 31,31); //straight
         sleep(1000);
 
         //robot.dt.encoderDrive(1, -17, 17);

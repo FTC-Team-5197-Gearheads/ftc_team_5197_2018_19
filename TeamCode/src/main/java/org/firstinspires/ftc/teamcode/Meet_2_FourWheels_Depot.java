@@ -233,18 +233,21 @@ public class Meet_2_FourWheels_Depot extends LinearOpMode {
     }
 
     private void targetRight() {
-
         // build a profile to handle target on right
         robot.dt.encoderDrive(1, 3, -3);
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(1, 25, 25);
+        robot.dt.encoderDrive(1, 37, 37);
         sleep(1500);
-        robot.dt.encoderDrive(1, 20, -20);
-        sleep(10000);
-        robot.dt.encoderDrive(1, -10 , -10);
+        robot.dt.encoderDrive(1, 23, -23);
+        sleep(1000);
+        robot.dt.encoderDrive(1, -20, -20);
+        sleep(1000);
         robot.idenfierFor5197Depositer.depositTeamIdentifier();
         sleep(1000);
-        robot.dt.encoderDrive(1, 50, 50);
+        robot.dt.encoderDrive(1, -1, 1);
+        sleep(1000);
+        robot.dt.encoderDrive(1, 75, 75);
+        sleep(2000);
         done = true;  // end the run
     }
 
@@ -253,13 +256,24 @@ public class Meet_2_FourWheels_Depot extends LinearOpMode {
         // build a profile to handle target on right
         robot.dt.encoderDrive(1, -5, 5); //turn to gold
         sleep(1000);
-        robot.dt.encoderDrive(1, 70, 70);
+        robot.dt.encoderDrive(1, 30,30); //straight
         sleep(1000);
-        robot.dt.encoderDrive(1, 60, -60);
+        robot.dt.encoderDrive(1, -10, 10); //small left turn
+        sleep(1000);
+        robot.dt.encoderDrive(1, 14, 14); //go straight again
+        sleep(1000);
+        robot.dt.encoderDrive(1, 20, -20); //turn to corner
+        sleep(1000);
+        robot.dt.encoderDrive(1, 17, 17); //forward to corner
+        sleep(1000);
+        robot.dt.encoderDrive(1, 20, -20);
+        sleep(1000);
+        robot.dt.encoderDrive(1, 4, 4);
         sleep(1000);
         robot.idenfierFor5197Depositer.depositTeamIdentifier();
         sleep(1000);
-        robot.dt.encoderDrive(1, 40, 40);
+
+        robot.dt.encoderDrive(1, 78, 78);
         sleep(3000);
         done = true;
     }
