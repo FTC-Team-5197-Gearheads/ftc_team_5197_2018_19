@@ -32,15 +32,13 @@ package org.firstinspires.ftc.teamcode;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Meet 1 FourWheels Facing Crater", group="REVTrixbot")
-@Disabled
-//Using 20:1 lift motor in CONFIG. Need to consult with hardware on this.
-public class Meet_1_FourWheels_Crater extends LinearOpMode {
+@Autonomous(name="Meet 2 FourWheels Facing Depot", group="REVTrixbot")
+//@Disabled
+public class Meet_2_FourWheels_Depot extends LinearOpMode {
 
 
     // Declare OpMode members.
@@ -70,14 +68,13 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         LEFT, MID, RIGHT, UNKNOWN
     }
 
+
     @Override
     public void runOpMode() {
 
-        Round_1_Op.Pos pos = Round_1_Op.Pos.MID;
+        Pos pos = Pos.MID;
         String text = "??";
 
-
-        // Init Detector
         locator = new GoldMineralDetector_2();
         locator.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         locator.useDefaults();
@@ -104,6 +101,13 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         // Init robot
 
         robot.dt.init(hardwareMap);
+        robot.idenfierFor5197Depositer.init(hardwareMap);
+        robot.revTrixBotMineralArm.laArmLifter.init(hardwareMap);
+        sleep(12000); //give time for driver team to put robot on the field
+        robot.revTrixBotMineralArm.laArmLifter.moveToMinPos(0.5);
+        //robot.revTrixBotMineralArm.laArmLifter.teleOpMove(false, true, 0.008); //sleezy but will have to do
+
+        //robot.roverRuckusRevTrixBotLift.init(hardwareMap);
 
         // turn on camera
         locator.enable();
@@ -118,7 +122,9 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         while (opModeIsActive() && !done) {
         // lineup the camera on the right side
         // right 2 balls are visible
+            land(); //starts the robot in the middle, then turn to the right before sampling
             sleep(1000);
+
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
@@ -137,19 +143,17 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
 
             if(visible) {
                 if (x < 0)
-                    pos = Round_1_Op.Pos.LEFT;
+                    pos = Pos.MID;
                 else if (x >= 0)
-                    pos = Round_1_Op.Pos.MID;
+                    pos = Pos.RIGHT;
             }   else {
-                pos = Round_1_Op.Pos.RIGHT;
+                pos = Pos.LEFT;
             }
 
             switch (pos) {
                 case LEFT:
                     //do left thing
                     text = "LEFT";
-                    telemetry.addData("Pos" , text); // Gold X pos.
-                    telemetry.update();// Gold X pos.
                     targetLeft();
 
                     break;
@@ -157,8 +161,6 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
                 case RIGHT:
                     //do left thing
                     text = "RIGHT";
-                    telemetry.addData("Pos" , text); // Gold X pos.
-                    telemetry.update();// Gold X pos.
                     targetRight();
 
                     break;
@@ -166,8 +168,6 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
                 case MID:
                     //do left thing
                     text = "Mid";
-                    telemetry.addData("Pos" , text); // Gold X pos.
-                    telemetry.update();// Gold X pos.
                     targetCenter();
                     break;
 
@@ -182,61 +182,88 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
             telemetry.addData("Pos" , text); // Gold X pos.
 
             telemetry.update();// Gold X pos.
+
+            /*
+            robot.roverRuckusRevTrixBotLift.moveToMinPos(1);
+            */
         }
 
         telemetry.addData("Status" ,"All Done"); // Is the bot aligned with the gold mineral
         telemetry.update();// Gold X pos.
     }
 
+
+    private void land(){
+       // robot.revTrixBotMineralArm.laArmLifter.setBraking(false);
+        robot.revTrixBotMineralArm.laArmLifter.moveToMaxPos(0.1);
+        /*
+        robot.dt.encoderDrive(1, 3.3, -3.3); //turn to gold
+        */
+        sleep(2000);
+    }
+
+
+
     private void targetLeft()  {
         // build a profile to handle target on left
-        robot.dt.encoderDrive(1, -5, 5);
+        robot.dt.encoderDrive(1, -10, 10); //turn to gold mineral
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -40, -40);
+        robot.dt.encoderDrive(-1, -45, -45); //move to gold mineral
         sleep(1500);
-
-        /*
-        robot.dt.encoderDrive(-1, 10, 10);
-        sleep(1500);
-        robot.dt.encoderDrive(-1, 5.0, -5.0);
-        sleep(2000);
-        robot.dt.encoderDrive(-1, -20, -20);
+        robot.dt.encoderDrive(-1, 18.75, -18.75); //turn to depot
         sleep(1000);
-        */
+        robot.dt.encoderDrive(-1, -32, -32); //go to depot
+        sleep(1000);
+        robot.idenfierFor5197Depositer.depositTeamIdentifier(); //deposit team identifer.
+        sleep(1000);
+        robot.dt.encoderDrive(1, -23, 23); //turn to crater
+        sleep(1000);
+        robot.dt.encoderDrive(1, 76, 76); //drive to crater
+        sleep(1000);
+        done = true;  // end the run
 
-         done = true;  // end the run
+
     }
 
     private void targetRight() {
 
         // build a profile to handle target on right
-        robot.dt.encoderDrive(1, 8, -8);
+        robot.dt.encoderDrive(1, 3.3, -3.3); //turn to gold
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -40, -40);
+        robot.dt.encoderDrive(-1, -39, -39); //drive to gold
         sleep(1500);
-
-        /*
-        robot.dt.encoderDrive(-1, 10, 10);
-        sleep(1500);
-        robot.dt.encoderDrive(-1, -13.0, 13.0);
+        robot.dt.encoderDrive(-1, -12.5, 12.5); //turn to depot
         sleep(2000);
-        robot.dt.encoderDrive(-1, -20, -20);
+        robot.dt.encoderDrive(-1, -20, -20); //drive to depot.
         sleep(1000);
-        */
-
+        robot.idenfierFor5197Depositer.depositTeamIdentifier();
+        sleep(1000);
+        robot.dt.encoderDrive(1,-2.33,2.33); //veer a little left to be safe.
+        sleep(1000);
+        robot.dt.encoderDrive(1, 70, 70); //drive to crater
+        sleep(1000);
         done = true;  // end the run
     }
 
     private void targetCenter() {
 
         // build a profile to handle target on right
-        robot.dt.encoderDrive(1, 3, -3);
+        robot.dt.encoderDrive(1, -4, 4); //turn to gold
+        sleep(1000);// wait for the previous motion to complete
+        robot.dt.encoderDrive(-1, -22, -22); //move to gold
+        sleep(1500);
+        robot.dt.encoderDrive(1, 4, -4); //turn to depot
         sleep(1000);
-        robot.dt.encoderDrive(1,-28, -28);
+        robot.dt.encoderDrive(1, -35, -35); //move to depot
         sleep(1000);
-
-        //robot.dt.encoderDrive(1, -17, 17);
-
+        robot.idenfierFor5197Depositer.depositTeamIdentifier();
+        sleep(1000);
+        robot.dt.encoderDrive(1, 1.5, 1.5);
+        sleep(1000);
+        robot.dt.encoderDrive(1, -11.83, 11.83);
+        sleep(1000);
+        robot.dt.encoderDrive(1, 75, 75);
+        sleep(1500);
         done = true;  // end the run
     }
 

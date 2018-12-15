@@ -32,15 +32,14 @@ package org.firstinspires.ftc.teamcode;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Meet 1 FourWheels Facing Crater", group="REVTrixbot")
-@Disabled
+@Autonomous(name="Meet 2 FourWheels Facing Crater", group="REVTrixbot")
+//@Disabled
 //Using 20:1 lift motor in CONFIG. Need to consult with hardware on this.
-public class Meet_1_FourWheels_Crater extends LinearOpMode {
+public class Meet_2_FourWheels_Crater extends LinearOpMode {
 
 
     // Declare OpMode members.
@@ -73,7 +72,7 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Round_1_Op.Pos pos = Round_1_Op.Pos.MID;
+        Pos pos = Pos.MID;
         String text = "??";
 
 
@@ -118,6 +117,7 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         while (opModeIsActive() && !done) {
         // lineup the camera on the right side
         // right 2 balls are visible
+            land();
             sleep(1000);
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
@@ -137,11 +137,11 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
 
             if(visible) {
                 if (x < 0)
-                    pos = Round_1_Op.Pos.LEFT;
+                    pos = Pos.MID;
                 else if (x >= 0)
-                    pos = Round_1_Op.Pos.MID;
+                    pos = Pos.RIGHT;
             }   else {
-                pos = Round_1_Op.Pos.RIGHT;
+                pos = Pos.LEFT;
             }
 
             switch (pos) {
@@ -186,6 +186,12 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
 
         telemetry.addData("Status" ,"All Done"); // Is the bot aligned with the gold mineral
         telemetry.update();// Gold X pos.
+    }
+
+    private void land(){
+        robot.dt.encoderDrive(1, 3.3, -3.3); //turn to gold
+        sleep(1000);// wait for the previous motion to complete
+
     }
 
     private void targetLeft()  {

@@ -33,13 +33,14 @@ import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Meet 1 FourWheels Facing Depot", group="REVTrixbot")
-//@Disabled
+@Disabled
 public class Meet_1_FourWheels_Depot extends LinearOpMode {
 
 
@@ -103,7 +104,7 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
 
         robot.dt.init(hardwareMap);
         robot.idenfierFor5197Depositer.init(hardwareMap);
-        robot.roverRuckusRevTrixBotLift.init(hardwareMap);
+        //robot.roverRuckusRevTrixBotLift.init(hardwareMap); TODO change for new lift
 
         // turn on camera
         locator.enable();
@@ -188,14 +189,14 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
     }
 
     private void land(){
-        robot.roverRuckusRevTrixBotLift.setBraking(false);
-        robot.roverRuckusRevTrixBotLift.moveToMaxPos(1);
+        //robot.roverRuckusRevTrixBotLift.setBraking(false);
+        //robot.roverRuckusRevTrixBotLift.moveToMaxPos(1);
         sleep(2000);
-        robot.roverRuckusRevTrixBotLift.setBraking(true);
+       // robot.roverRuckusRevTrixBotLift.setBraking(true);
         robot.dt.encoderDrive(1, 3, 3);
         sleep(1000);
 
-        robot.roverRuckusRevTrixBotLift.moveToMinPos(1); //do so robot can move under lander. TODO. Put it back
+        //robot.roverRuckusRevTrixBotLift.moveToMinPos(1); //do so robot can move under lander. TODO. Put it back
         sleep(2000);
 
         robot.dt.encoderDrive(1, -2, -4); //TODO due other way as to avoid hitting other robots
