@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Meet 1 FourWheels Facing Crater", group="REVTrixbot")
 //@Disabled
+//Using 20:1 lift motor in CONFIG. Need to consult with hardware on this.
 public class Meet_1_FourWheels_Crater extends LinearOpMode {
 
 
@@ -51,7 +52,6 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
     private boolean done = false;
     private double x = 0.0;
     private double y = 0.0;
-
     private final static int MIDPOINT = 0;  // screen midpoint
     private final static int LEFTPOINT = -106;
     private final static int RIGHTPOINT = 106;
@@ -72,8 +72,9 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pos pos = Pos.MID;
+        Round_1_Op.Pos pos = Round_1_Op.Pos.MID;
         String text = "??";
+
 
         // Init Detector
         locator = new GoldMineralDetector_2();
@@ -87,7 +88,7 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
 
         //locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
         locator.areaScoringMethod = DogeCV.AreaScoringMethod.PERFECT_AREA; // Can also be PERFECT_AREA
-        locator.perfectAreaScorer.perfectArea = 3000;  // To be calibrated
+        locator.perfectAreaScorer.perfectArea = 2400;  // Roughly cal
         //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
         //locator.maxAreaScorer.weight = 0.005;
         locator.perfectAreaScorer.weight = 0.01;
@@ -121,7 +122,7 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
 
-            if (locator.getArea() < 1750 )
+            if (locator.getArea() < 1200 )
                 visible = false;
 
             if (locator.getRatio() > 2.5)
@@ -135,17 +136,19 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
 
             if(visible) {
                 if (x < 0)
-                    pos = Pos.LEFT;
+                    pos = Round_1_Op.Pos.LEFT;
                 else if (x >= 0)
-                    pos = Pos.MID;
+                    pos = Round_1_Op.Pos.MID;
             }   else {
-                pos = Pos.RIGHT;
+                pos = Round_1_Op.Pos.RIGHT;
             }
 
             switch (pos) {
                 case LEFT:
                     //do left thing
                     text = "LEFT";
+                    telemetry.addData("Pos" , text); // Gold X pos.
+                    telemetry.update();// Gold X pos.
                     targetLeft();
 
                     break;
@@ -153,6 +156,8 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
                 case RIGHT:
                     //do left thing
                     text = "RIGHT";
+                    telemetry.addData("Pos" , text); // Gold X pos.
+                    telemetry.update();// Gold X pos.
                     targetRight();
 
                     break;
@@ -160,6 +165,8 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
                 case MID:
                     //do left thing
                     text = "Mid";
+                    telemetry.addData("Pos" , text); // Gold X pos.
+                    telemetry.update();// Gold X pos.
                     targetCenter();
                     break;
 
@@ -171,7 +178,6 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
             }
             telemetry.addData("IsFound" ,visible); // Is the bot aligned with the gold mineral
             telemetry.addData("X Pos" , x); // Gold X pos.
-            telemetry.addData("Y Pos" , y); // Gold Y pos.
             telemetry.addData("Pos" , text); // Gold X pos.
 
             telemetry.update();// Gold X pos.

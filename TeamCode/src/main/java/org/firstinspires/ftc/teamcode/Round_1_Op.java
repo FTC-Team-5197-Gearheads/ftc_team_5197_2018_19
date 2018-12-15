@@ -90,7 +90,7 @@ public class Round_1_Op extends LinearOpMode {
 
         //locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
         locator.areaScoringMethod = DogeCV.AreaScoringMethod.PERFECT_AREA; // Can also be PERFECT_AREA
-        locator.perfectAreaScorer.perfectArea = 3000;  // To be calibrated
+        locator.perfectAreaScorer.perfectArea = 2400;  // Roughly cal
         //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
         //locator.maxAreaScorer.weight = 0.005;
         locator.perfectAreaScorer.weight = 0.01;
@@ -114,7 +114,7 @@ public class Round_1_Op extends LinearOpMode {
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
 
-            if (locator.getArea() < 1750 )
+            if (locator.getArea() < 1200 )
                 visible = false;
 
             if (locator.getRatio() > 2.5)

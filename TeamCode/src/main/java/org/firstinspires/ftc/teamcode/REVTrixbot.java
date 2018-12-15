@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -73,92 +74,73 @@ public class REVTrixbot extends GenericFTCRobot
     private static final double     DRIVE_WHEEL_SEPARATION  = 15.0 ;
     private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; //encoder cables installed 10/27/18
 
-
-
+    REVTrixbot(){
+        super.init();
+    }
 
     FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
-            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "motor0", "motor1",
-            "motor2", "motor3");
+            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "EH1motor0", "EH1motor1",
+            "EH1motor2", "EH1motor3");
 
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
 
-    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.5,0.9); //move to 180 at init. Then to close to 360
+    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.5,0.9, "EH1servo5"); //move to 180 at init. Then to close to
 
-    /* Lifter not ready
-    Lifter mineralArm = new Lifter(0, 180, 0, 180,
-            0, 100, "Servo1", "motor3", "motor4");
-   */
+    MineralPushingPaddles revTrixbotMineralPaddles = new MineralPushingPaddles(0.0, 0.0, 0.4, "EH1servo3", "EH1servo4");
 
-    private class Lifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
+    LimitedDcMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedDcMotorDrivenActuator("EH2motor1",  //Clockwise rotation is up
+            0, 3500, DcMotorSimple.Direction.FORWARD, false,  //TODO add a "tolerance" encoder counts value to allow a few encoders count off. Of course limit switches are always better.
+            false, true, null, null,
+            null,
+            true, false, true, 1); //TODO maybe thorw IllegalArgument exception for going to Min or Max without limit switch. Need to see if rotations being counted before runtime.
+
+    MineralLifter revTrixBotMineralArm = new MineralLifter(0, 0.9,
+            0, 3, 0,
+            10, "EH2servo0", "EH2motor1",
+            "EH2motor2", 0.0); //Not ready.
+
+
+    public class MineralLifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;
-        private final int GRIPPER_CLOSED_DEGREES;
-        private final int GRIPPER_OPEN_DEGREES;
+        private Servo gripper_arm = null;
+        private final double GRIPPER_CLOSED;
+        private final double GRIPPER_OPEN;
+        private final double UP_AND_DOWN;
         private final String GRIPPER_SERVO_NAME;
 
-        private DcMotor armLiftermotor = null;
-        private final int LIFTER_STOWED_ROTATIONS;
-        private final int LIFTER_ERECT_ROTATIONS;
-        private final String LIFTER_MOTOR_NAME;
+        LimitedDcMotorDrivenActuator laArmLifter;
+        LimitedDcMotorDrivenActuator laArm;
 
-        private DcMotor linearActuatorMotor = null;
-        private final int LA_RETRACRED_ROTATIONS;
-        private final int LA_EXTENDED_ROTATIONS;
-        private final String LA_MOTOR_NAME;
-
-        Lifter(final int GRIPPER_CLOSED_DEGREES, final int GRIPPER_OPEN_DEGREES, final int LIFTER_STOWED_ROTATIONS,
-               final int LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS,
-               final String GRIPPER_SERVO_NAME, final String LIFTER_MOTOR_NAME, final String LA_MOTOR_NAME){ //TODO Maybe Multithread Lifter and LA so they run simultaneosly
-            this.GRIPPER_CLOSED_DEGREES = GRIPPER_CLOSED_DEGREES;
-            this.GRIPPER_OPEN_DEGREES = GRIPPER_OPEN_DEGREES;
+        MineralLifter(final double GRIPPER_CLOSED, final double GRIPPER_OPEN, final int LA_ARM_LIFTER_STOWED_ROTATIONS,
+                      final int LA_ARM_LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS,
+                      final String GRIPPER_SERVO_NAME, final String LA_ARM_LIFTER_MOTOR_NAME, final String LA_MOTOR_NAME, final double UP_AND_DOWN){ //TODO Maybe Multithread Lifter and LA so they run simultaneosly
+            this.GRIPPER_CLOSED = GRIPPER_CLOSED;
+            this.GRIPPER_OPEN = GRIPPER_OPEN;
             this.GRIPPER_SERVO_NAME = GRIPPER_SERVO_NAME;
-            this.LIFTER_STOWED_ROTATIONS = LIFTER_STOWED_ROTATIONS;
-            this.LIFTER_ERECT_ROTATIONS = LIFTER_ERECT_ROTATIONS;
-            this.LIFTER_MOTOR_NAME = LIFTER_MOTOR_NAME;
-            this.LA_RETRACRED_ROTATIONS = LA_RETRACTED_ROTATIONS;
-            this.LA_EXTENDED_ROTATIONS = LA_EXTENDED_ROTATIONS;
-            this.LA_MOTOR_NAME = LA_MOTOR_NAME;
-        }
+            this.UP_AND_DOWN = UP_AND_DOWN;
 
+            laArmLifter = new LimitedDcMotorDrivenActuator(LA_ARM_LIFTER_MOTOR_NAME,
+                    LA_ARM_LIFTER_STOWED_ROTATIONS, LA_ARM_LIFTER_ERECT_ROTATIONS, DcMotorSimple.Direction.FORWARD,
+                    false, false, true, null,
+                    null, null,
+                    true, false, true,1);
+
+            laArm = new LimitedDcMotorDrivenActuator(LA_MOTOR_NAME,
+                    LA_RETRACTED_ROTATIONS, LA_EXTENDED_ROTATIONS, DcMotorSimple.Direction.FORWARD, false,
+                    false, true, null, null,
+                    null,
+                    true, false, true,1);
+        }
 
         public void init(HardwareMap ahwMap){
             gripper = ahwMap.get(Servo.class, GRIPPER_SERVO_NAME);
-            armLiftermotor = ahwMap.get(DcMotor.class, LIFTER_MOTOR_NAME);
-            linearActuatorMotor = ahwMap.get(DcMotor.class, LA_MOTOR_NAME);
-
-            armLiftermotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if
-            linearActuatorMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
-
-            // Set all motors to zero power
-            armLiftermotor.setPower(0);
-            linearActuatorMotor.setPower(0);
+            //gripper_arm = ahwMap.get(Servo.class, );
             closeGripper();
 
-            // Set both motors to run with encoders.
-            armLiftermotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            linearActuatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            armLiftermotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            linearActuatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+            laArmLifter.init(ahwMap);
+            laArm.init(ahwMap);
 
-        public void teleOpExtendLinearActuator(boolean extendButton, boolean retractButton){
-            if((linearActuatorMotor.getCurrentPosition() <= LA_EXTENDED_ROTATIONS) && extendButton){
-                linearActuatorMotor.setPower(1);
-            }
-
-            if ((linearActuatorMotor.getCurrentPosition() >= LA_RETRACRED_ROTATIONS) && retractButton){
-                linearActuatorMotor.setPower(-1);
-            }
-        }
-
-        public void teleOpLiftLinearActuator(boolean liftButton, boolean lowerButton){
-            if((armLiftermotor.getCurrentPosition() <= LIFTER_ERECT_ROTATIONS) && liftButton){
-                armLiftermotor.setPower(1);
-            }
-
-            if ((linearActuatorMotor.getCurrentPosition() >= LIFTER_STOWED_ROTATIONS) && lowerButton){
-                linearActuatorMotor.setPower(-1);
-            }
         }
 
         public void teleOpGrip(boolean gripButton, boolean openButton){ //preferably a trigger
@@ -168,39 +150,25 @@ public class REVTrixbot extends GenericFTCRobot
                 openGripper();
         }
 
-        public void extendLinearActuator(int rotations){
-            if (linearActuatorMotor.getCurrentPosition() >= LA_EXTENDED_ROTATIONS && (rotations > 0)) //abort if already erect
-                return;
-            if ((linearActuatorMotor.getCurrentPosition() <= LA_RETRACRED_ROTATIONS) && (rotations < 0)) //another reasons to abort
-                return;
-            linearActuatorMotor.setTargetPosition(rotations);
-            linearActuatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            linearActuatorMotor.setPower(1);
-            while(linearActuatorMotor.isBusy()){}//wait
-            linearActuatorMotor.setPower(0);
-            linearActuatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
-        public void liftLinearActuator(int rotations){
-            if (armLiftermotor.getCurrentPosition() >= LIFTER_ERECT_ROTATIONS && (rotations > 0)) //abort if already erect
-                return;
-            if ((armLiftermotor.getCurrentPosition() <= LIFTER_STOWED_ROTATIONS) && (rotations < 0)) //another reasons to abort
-                return;
-            armLiftermotor.setTargetPosition(rotations);
-            armLiftermotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            armLiftermotor.setPower(1);
-            while(armLiftermotor.isBusy()){}//wait
-            armLiftermotor.setPower(0);
-            armLiftermotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        public void teleOpGripArmUpDown (boolean upButton, boolean downButton){
+            if (upButton)
+                upGripperArm();
+            if (downButton)
+                downGripperArm();
         }
 
         public void openGripper(){
-            gripper.setPosition(GRIPPER_OPEN_DEGREES);
+            gripper.setPosition(GRIPPER_OPEN);
         }
 
         public void closeGripper(){
-            gripper.setPosition(GRIPPER_CLOSED_DEGREES);
+            gripper.setPosition(GRIPPER_CLOSED);
         }
+
+        public void upGripperArm(){ gripper_arm.setPosition( UP_AND_DOWN + 1.0 ); }
+
+        public void downGripperArm(){ gripper_arm.setPosition( UP_AND_DOWN - 1.0 );}
+
 
     }
 
@@ -208,14 +176,16 @@ public class REVTrixbot extends GenericFTCRobot
         private Servo glypgDepositServo = null;
         private final double INIT_POS;
         private final double DEPOSIT_POS;
+        private final String SERVO_NAME;
 
-        TeamIdenfifierDepositer(final double INIT_POS, final double DEPOSIT_POS){
+        TeamIdenfifierDepositer(final double INIT_POS, final double DEPOSIT_POS, final String SERVO_NAME){
             this.INIT_POS = INIT_POS;
             this.DEPOSIT_POS = DEPOSIT_POS;
+            this.SERVO_NAME = SERVO_NAME;
         }
 
         public void init(HardwareMap ahwMap) {
-            glypgDepositServo = ahwMap.get(Servo.class, "servo5");
+            glypgDepositServo = ahwMap.get(Servo.class, SERVO_NAME);
             glypgDepositServo.setPosition(INIT_POS);
         }
 
@@ -224,7 +194,44 @@ public class REVTrixbot extends GenericFTCRobot
         }
     }
 
+    public class MineralPushingPaddles implements FTCModularizableSystems{
+        private Servo leftPaddle = null;
+        private Servo rightPaddle = null;
+        private final double INIT_POS;
+        private final double RETRACTED_POS;
+        private final double DEPLOYED_POS;
+        private final String LEFT_SERVO_NAME;
+        private final String RIGHT_SERVO_NAME;
+        private boolean deployRetractButtonWasPressed = false;
 
+        MineralPushingPaddles(final double INIT_POS, final double RETRACTED_POS, final double DEPLOYED_POS,
+                              final String LEFT_SERVO_NAME, final String RIGHT_SERVO_NAME){
+            this.INIT_POS = INIT_POS;
+            this.RETRACTED_POS = RETRACTED_POS;
+            this.DEPLOYED_POS = DEPLOYED_POS;
+            this.LEFT_SERVO_NAME = LEFT_SERVO_NAME;
+            this.RIGHT_SERVO_NAME = RIGHT_SERVO_NAME;
+        }
 
+        @Override
+        public void init(HardwareMap ahwMap) {
+            leftPaddle = ahwMap.get(Servo.class, LEFT_SERVO_NAME);
+            rightPaddle = ahwMap.get(Servo.class, RIGHT_SERVO_NAME);
+            leftPaddle.setPosition(INIT_POS);
+            rightPaddle.setPosition(INIT_POS);
+        }
 
+        public void teleOpDeployRetractPaddles(boolean deployRetractButton){
+            if(deployRetractButton){
+                leftPaddle.setPosition(DEPLOYED_POS);
+                rightPaddle.setPosition(DEPLOYED_POS);
+                deployRetractButtonWasPressed = true;
+            }
+            else if (deployRetractButtonWasPressed){
+                leftPaddle.setPosition(RETRACTED_POS);
+                rightPaddle.setPosition(RETRACTED_POS);
+                deployRetractButtonWasPressed = false; //reset. Now
+            }
+        }
+    }
 }

@@ -31,8 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
+import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -51,7 +53,6 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
     private boolean done = false;
     private double x = 0.0;
     private double y = 0.0;
-
     private final static int MIDPOINT = 0;  // screen midpoint
     private final static int LEFTPOINT = -106;
     private final static int RIGHTPOINT = 106;
@@ -72,10 +73,9 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pos pos = Pos.MID;
+        Round_1_Op.Pos pos = Round_1_Op.Pos.MID;
         String text = "??";
 
-        // Init Detector
         locator = new GoldMineralDetector_2();
         locator.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         locator.useDefaults();
@@ -87,7 +87,7 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
 
         //locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
         locator.areaScoringMethod = DogeCV.AreaScoringMethod.PERFECT_AREA; // Can also be PERFECT_AREA
-        locator.perfectAreaScorer.perfectArea = 3000;  // To be calibrated
+        locator.perfectAreaScorer.perfectArea = 2400;  // Roughly cal
         //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
         //locator.maxAreaScorer.weight = 0.005;
         locator.perfectAreaScorer.weight = 0.01;
@@ -103,6 +103,7 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
 
         robot.dt.init(hardwareMap);
         robot.idenfierFor5197Depositer.init(hardwareMap);
+        robot.roverRuckusRevTrixBotLift.init(hardwareMap);
 
         // turn on camera
         locator.enable();
@@ -117,12 +118,13 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         while (opModeIsActive() && !done) {
         // lineup the camera on the right side
         // right 2 balls are visible
-            sleep(1000);
+            ///land();
+            //sleep(8000);
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
 
-            if (locator.getArea() < 1750 )
+            if (locator.getArea() < 1200 )
                 visible = false;
 
             if (locator.getRatio() > 2.5)
@@ -136,11 +138,11 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
 
             if(visible) {
                 if (x < 0)
-                    pos = Pos.MID;
+                    pos = Round_1_Op.Pos.MID;
                 else if (x >= 0)
-                    pos = Pos.RIGHT;
+                    pos = Round_1_Op.Pos.RIGHT;
             }   else {
-                pos = Pos.LEFT;
+                pos = Round_1_Op.Pos.LEFT;
             }
 
             switch (pos) {
@@ -172,15 +174,40 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
             }
             telemetry.addData("IsFound" ,visible); // Is the bot aligned with the gold mineral
             telemetry.addData("X Pos" , x); // Gold X pos.
-            telemetry.addData("Y Pos" , y); // Gold Y pos.
             telemetry.addData("Pos" , text); // Gold X pos.
 
-            telemetry.update();// Update Display
+            telemetry.update();// Gold X pos.
+
+            /*
+            robot.roverRuckusRevTrixBotLift.moveToMinPos(1);
+            */
         }
 
         telemetry.addData("Status" ,"All Done"); // Is the bot aligned with the gold mineral
-        telemetry.update();// Update Display
+        telemetry.update();// Gold X pos.
     }
+
+    private void land(){
+        robot.roverRuckusRevTrixBotLift.setBraking(false);
+        robot.roverRuckusRevTrixBotLift.moveToMaxPos(1);
+        sleep(2000);
+        robot.roverRuckusRevTrixBotLift.setBraking(true);
+        robot.dt.encoderDrive(1, 3, 3);
+        sleep(1000);
+
+        robot.roverRuckusRevTrixBotLift.moveToMinPos(1); //do so robot can move under lander. TODO. Put it back
+        sleep(2000);
+
+        robot.dt.encoderDrive(1, -2, -4); //TODO due other way as to avoid hitting other robots
+        sleep(1000);
+        robot.dt.encoderDrive(1, -4, -4);
+
+
+
+
+    }
+
+
 
     private void targetLeft()  {
         // build a profile to handle target on left
@@ -199,6 +226,7 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         robot.dt.encoderDrive(1, 76, 76); //drive to crater
         sleep(1000);
         done = true;  // end the run
+
 
     }
 
@@ -239,8 +267,8 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         sleep(1000);
         robot.dt.encoderDrive(1, -11.83, 11.83);
         sleep(1000);
-        robot.dt.encoderDrive(1, 72, 72);
-        sleep(1000);
+        robot.dt.encoderDrive(1, 75, 75);
+        sleep(1500);
         done = true;  // end the run
     }
 

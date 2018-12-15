@@ -76,7 +76,7 @@ public class Lookeebot_4Wheels
     public DcMotor rightFrontDrive  = null;
     public DcMotor leftBackDrive   = null;
     public DcMotor rightBackDrive  = null;
-    // Lift and claw members go here.
+    // RobotLift and claw members go here.
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
