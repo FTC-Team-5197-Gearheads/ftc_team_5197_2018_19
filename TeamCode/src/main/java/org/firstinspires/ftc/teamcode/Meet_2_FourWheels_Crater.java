@@ -103,6 +103,7 @@ public class Meet_2_FourWheels_Crater extends LinearOpMode {
         // Init robot
 
         robot.dt.init(hardwareMap);
+        robot.idenfierFor5197Depositer.init(hardwareMap);
 
         // turn on camera
         locator.enable();
@@ -113,12 +114,16 @@ public class Meet_2_FourWheels_Crater extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        robot.dt.encoderDrive(1, 4, 4);
+        sleep(1000);
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !done) {
         // lineup the camera on the right side
         // right 2 balls are visible
-            land();
-            sleep(1000);
+           // land();
+
+
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
@@ -173,7 +178,7 @@ public class Meet_2_FourWheels_Crater extends LinearOpMode {
 
                 default:
                     text = "Unknown";
-                    targetUnknown();
+                    //targetUnknown();
                     break;
 
             }
@@ -189,17 +194,18 @@ public class Meet_2_FourWheels_Crater extends LinearOpMode {
     }
 
     private void land(){
+        // robot.revTrixBotMineralArm.laArmLifter.setBraking(false);
+        robot.revTrixBotMineralArm.laArmLifter.moveToMaxPos(0.1);
+        /*
         robot.dt.encoderDrive(1, 3.3, -3.3); //turn to gold
-        sleep(1000);// wait for the previous motion to complete
-
+        */
+        sleep(2000);
     }
 
     private void targetLeft()  {
         // build a profile to handle target on left
-        robot.dt.encoderDrive(1, -5, 5);
-        sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -40, -40);
-        sleep(1500);
+
+
 
         /*
         robot.dt.encoderDrive(-1, 10, 10);
@@ -216,19 +222,9 @@ public class Meet_2_FourWheels_Crater extends LinearOpMode {
     private void targetRight() {
 
         // build a profile to handle target on right
-        robot.dt.encoderDrive(1, 8, -8);
-        sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -40, -40);
-        sleep(1500);
 
-        /*
-        robot.dt.encoderDrive(-1, 10, 10);
-        sleep(1500);
-        robot.dt.encoderDrive(-1, -13.0, 13.0);
-        sleep(2000);
-        robot.dt.encoderDrive(-1, -20, -20);
-        sleep(1000);
-        */
+
+
 
         done = true;  // end the run
     }
