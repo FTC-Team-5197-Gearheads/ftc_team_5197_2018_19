@@ -58,7 +58,7 @@ public class Lookeebot_4W_TankDrive extends OpMode {
     @Override
     public void init() {
         /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
+         * The initHardware() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
 

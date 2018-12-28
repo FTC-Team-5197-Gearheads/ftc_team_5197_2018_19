@@ -80,7 +80,7 @@ public class Calibrate extends LinearOpMode {
 
         /*
          * Initialize the drive system variables.
-         * The init() method of the hardware class does all the work here
+         * The initHardware() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
 

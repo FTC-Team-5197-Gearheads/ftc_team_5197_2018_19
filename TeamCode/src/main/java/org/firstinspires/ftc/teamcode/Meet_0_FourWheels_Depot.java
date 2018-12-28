@@ -102,8 +102,8 @@ public class Meet_0_FourWheels_Depot extends LinearOpMode {
 
         // Init robot
 
-        robot.dt.init(hardwareMap);
-        robot.idenfierFor5197Depositer.init(hardwareMap);
+        robot.dt.initHardware(hardwareMap);
+        robot.idenfierFor5197Depositer.initHardware(hardwareMap);
 
         // turn on camera
         locator.enable();

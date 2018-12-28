@@ -15,5 +15,5 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  */
 
 public interface FTCModularizableSystems {
-    void init(HardwareMap ahwMap);
+    void initHardware(HardwareMap ahwMap);
 }

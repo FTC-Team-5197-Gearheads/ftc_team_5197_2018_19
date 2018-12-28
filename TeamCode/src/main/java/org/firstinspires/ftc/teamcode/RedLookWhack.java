@@ -58,7 +58,7 @@ public class RedLookWhack extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Initialize the drive train.
-        // The init() method of the hardware class does all the work here.
+        // The initHardware() method of the hardware class does all the work here.
         robot.init(hardwareMap);
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

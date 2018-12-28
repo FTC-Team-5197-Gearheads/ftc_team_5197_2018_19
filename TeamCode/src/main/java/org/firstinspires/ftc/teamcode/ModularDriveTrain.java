@@ -28,7 +28,7 @@ public abstract class ModularDriveTrain implements FTCModularDrivetrainDrivable 
     protected float rightPower = 0f;
 
 
-    //abstract public void init(HardwareMap ahwMap);
+    //abstract public void initHardware(HardwareMap ahwMap);
     //abstract public void driveLinearInches(double power, double distanceInInches);
     //abstract public void driveCurved();
     //abstract public void turn();

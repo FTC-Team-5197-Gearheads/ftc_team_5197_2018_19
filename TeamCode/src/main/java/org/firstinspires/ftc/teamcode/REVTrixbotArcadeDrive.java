@@ -64,11 +64,11 @@ public class REVTrixbotArcadeDrive extends ModularRobotIterativeOpMode {
     @Override
     public void init() {
         /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
+         * The initHardware() method of the hardware class does all the work here
          */
-        robot.dt.init(hardwareMap);
+        robot.dt.initHardware(hardwareMap);
 
-        robot.revTrixbotMineralPaddles.init(hardwareMap);
+        robot.revTrixbotMineralPaddles.initHardware(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello, Driver!");

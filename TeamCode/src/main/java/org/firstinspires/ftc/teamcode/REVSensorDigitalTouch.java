@@ -29,9 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.exception.RobotCoreException;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /*
  * This is an example LinearOpMode that shows how to use
@@ -42,8 +47,66 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
  */
-@TeleOp(name = "Sensor: Digital touch", group = "Sensor")
+@TeleOp(name = "Sensor: Digital touch using Threading", group = "Sensor")
 //@Disabled
+
+public class REVSensorDigitalTouch extends OpMode{
+    DigitalChannel digitalTouch;  // Hardware Device Object
+    DcMotor motor;
+    RevTouchSensor revTouchSensor;
+    TouchSensorMotor touchMotor = new TouchSensorMotor();
+
+
+    @Override
+    public void init() {
+        touchMotor.initHardware(hardwareMap);
+    }
+
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void loop() { //check if threads are done to proceed to next threads
+
+
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        touchMotor.interrupt();
+    }
+}
+
+class TouchSensorMotor extends Thread implements FTCModularizableSystems{
+    DcMotor motor;
+    RevTouchSensor revTouchSensor;
+    TouchSensorMotor(){
+
+    }
+    @Override
+    public void initHardware(HardwareMap ahwMap) {
+        motor = ahwMap.get(DcMotor.class, "EH1motor0");
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setPower(0);
+        revTouchSensor = ahwMap.get(RevTouchSensor.class, "sensor_digital");
+    }
+
+
+    @Override
+    public void run() {
+        super.run();
+        while(!revTouchSensor.isPressed());
+        motor.setPower(0.6);
+    }
+}
+
+/*
+
+
+
 public class REVSensorDigitalTouch extends LinearOpMode {
     /**
      * The REV Robotics Touch Sensor
@@ -53,18 +116,34 @@ public class REVSensorDigitalTouch extends LinearOpMode {
      * Also, when you connect a REV Robotics Touch Sensor to the digital I/O port on the
      * Expansion Hub using a 4-wire JST cable, the second pin gets connected to the Touch Sensor.
      * The lower (first) pin stays unconnected.*
-     */
+
 
     DigitalChannel digitalTouch;  // Hardware Device Object
+    DcMotor motor;
+    RevTouchSensor revTouchSensor;
+
+
+    @Override
+    public void internalPreInit() {
+        super.internalPreInit();
+        revTouchSensor = hardwareMap.get(RevTouchSensor.class, "sensor_digital");
+        motor = hardwareMap.get(DcMotor.class, "EH1motor0");
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setPower(0.6);
+        while(!revTouchSensor.isPressed());
+        motor.setPower(0);
+    }
 
     @Override
     public void runOpMode() {
 
         // get a reference to our digitalTouch object.
-        digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");
+        //digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");
+
+
 
         // set the digital channel to input.
-        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
+        //digitalTouch.setMode(DigitalChannel.Mode.INPUT);
 
         // wait for the start button to be pressed.
         waitForStart();
@@ -75,13 +154,22 @@ public class REVSensorDigitalTouch extends LinearOpMode {
 
             // send the info back to driver station using telemetry function.
             // if the digital channel returns true it's HIGH and the button is unpressed.
-            if (digitalTouch.getState() == true) {
-                telemetry.addData("Digital Touch", "Is Not Pressed");
-            } else {
+
+            if (revTouchSensor.isPressed() == true) {
                 telemetry.addData("Digital Touch", "Is Pressed");
+            } else {
+                telemetry.addData("Digital Touch", "Is not pressed");
             }
+
+
 
             telemetry.update();
         }
     }
 }
+*/
+
+
+
+
+

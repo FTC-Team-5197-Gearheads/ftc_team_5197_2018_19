@@ -79,7 +79,7 @@ public class VuforiaRoverRuckusLocalizer implements FTCModularizableSystems{
         this.CAMERA_LEFT_DISPLACEMENT = CAMERA_LEFT_DISPLACEMENTinmm;
     }
 
-    public void init(HardwareMap ahwMap) {
+    public void initHardware(HardwareMap ahwMap) {
         cameraMonitorViewId = ahwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", ahwMap.appContext.getPackageName());
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         targetsRoverRuckus = vuforia.loadTrackablesFromAsset("RoverRuckus");

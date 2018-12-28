@@ -48,7 +48,7 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
 
     }
 
-    public void init(HardwareMap ahwMap){
+    public void initHardware(HardwareMap ahwMap){
 
         FrontLeftDrive = ahwMap.get(DcMotor.class, frontLeftMotorName);
         FrontRightDrive = ahwMap.get(DcMotor.class, frontRightMotorName);

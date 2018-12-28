@@ -22,7 +22,7 @@ public class REVTrix_Callibrate_Iterative extends OpMode {
 
     @Override
     public void init() {
-        robot.dt.init(hardwareMap);
+        robot.dt.initHardware(hardwareMap);
     }
 
 

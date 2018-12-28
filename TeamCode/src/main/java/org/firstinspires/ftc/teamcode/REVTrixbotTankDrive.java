@@ -64,12 +64,12 @@ public class REVTrixbotTankDrive extends ModularRobotIterativeOpMode{
     @Override
     public void init() {
         /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
+         * The initHardware() method of the hardware class does all the work here
          */
-        robot.dt.init(hardwareMap);
-       // robot.roverRuckusRevTrixBotLift.init(hardwareMap);
+        robot.dt.initHardware(hardwareMap);
+       // robot.roverRuckusRevTrixBotLift.initHardware(hardwareMap);
 
-        //robot.goldLocator.init(hardwareMap); unnecessary
+        //robot.goldLocator.initHardware(hardwareMap); unnecessary
         //telemetry.addData("locator", "Initialized");
 
         // Send telemetry message to signify robot waiting;

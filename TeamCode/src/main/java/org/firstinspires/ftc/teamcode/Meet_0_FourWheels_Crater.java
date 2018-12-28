@@ -103,8 +103,8 @@ public class Meet_0_FourWheels_Crater extends LinearOpMode {
 
         // Init robot
 
-        robot.dt.init(hardwareMap);
-        //robot.revTrixbotLifter.init(hardwareMap);
+        robot.dt.initHardware(hardwareMap);
+        //robot.revTrixbotLifter.initHardware(hardwareMap);
 
         // turn on camera
         locator.enable();

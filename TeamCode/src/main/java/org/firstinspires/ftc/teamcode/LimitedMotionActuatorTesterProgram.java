@@ -100,25 +100,25 @@ public class LimitedMotionActuatorTesterProgram extends LinearOpMode {
                 telemetry.addData(disclaimer, warningMessage + "Press: a to continue");
                 telemetry.update();
                 while (!gamepad1.a){handleLoop();}
-                testMotor.init(hardwareMap);
+                testMotor.initHardware(hardwareMap);
                     break;
             case B_BUTTON:
                 telemetry.addData(disclaimer, warningMessage + "Press: b to continue");
                 telemetry.update();
                 while (!gamepad1.b){handleLoop();}
-                testMotor.init(hardwareMap);
+                testMotor.initHardware(hardwareMap);
                     break;
             case X_BUTTON:
                 telemetry.addData(disclaimer, warningMessage + "Press: x to continue");
                 telemetry.update();
                 while (!gamepad1.x){handleLoop();}
-                testMotor.init(hardwareMap);
+                testMotor.initHardware(hardwareMap);
                     break;
             case Y_BUTTON:
                 telemetry.addData(disclaimer, warningMessage + "Press: y to continue");
                 telemetry.update();
                 while (!gamepad1.y){handleLoop();}
-                testMotor.init(hardwareMap);
+                testMotor.initHardware(hardwareMap);
                     break;
             default:
                 handleLoop();

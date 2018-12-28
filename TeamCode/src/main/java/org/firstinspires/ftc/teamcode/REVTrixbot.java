@@ -87,7 +87,7 @@ public class REVTrixbot extends GenericFTCRobot
 
     GoldMineralDetector_2 goldLocator = new GoldMineralDetector_2();
 
-    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.62,0.2, "EH1servo5"); //move to 180 at init. Then to close to
+    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.62,0.2, "EH1servo5"); //move to 180 at initHardware. Then to close to
 
     MineralPushingPaddles revTrixbotMineralPaddles = new MineralPushingPaddles(0.0, 0.0, 0.4, "EH1servo3", "EH1servo4");
 
@@ -137,15 +137,15 @@ public class REVTrixbot extends GenericFTCRobot
                     true, false, true,1);
         }
 
-        public void init(HardwareMap ahwMap){
+        public void initHardware(HardwareMap ahwMap){
             gripper = ahwMap.get(Servo.class, GRIPPER_SERVO_NAME);
             gripper_wrist = ahwMap.get(Servo.class, GRIPPER_WRIST_NAME);
             //gripper_wrist = ahwMap.get(Servo.class, );
             closeGripper();
 
 
-            laArmLifter.init(ahwMap);
-            laArm.init(ahwMap);
+            laArmLifter.initHardware(ahwMap);
+            laArm.initHardware(ahwMap);
 
         }
 
@@ -192,7 +192,7 @@ public class REVTrixbot extends GenericFTCRobot
             this.SERVO_NAME = SERVO_NAME;
         }
 
-        public void init(HardwareMap ahwMap) {
+        public void initHardware(HardwareMap ahwMap) {
             glypgDepositServo = ahwMap.get(Servo.class, SERVO_NAME);
             glypgDepositServo.setPosition(INIT_POS);
         }
@@ -222,7 +222,7 @@ public class REVTrixbot extends GenericFTCRobot
         }
 
         @Override
-        public void init(HardwareMap ahwMap) {
+        public void initHardware(HardwareMap ahwMap) {
             leftPaddle = ahwMap.get(Servo.class, LEFT_SERVO_NAME);
             rightPaddle = ahwMap.get(Servo.class, RIGHT_SERVO_NAME);
             leftPaddle.setPosition(INIT_POS);

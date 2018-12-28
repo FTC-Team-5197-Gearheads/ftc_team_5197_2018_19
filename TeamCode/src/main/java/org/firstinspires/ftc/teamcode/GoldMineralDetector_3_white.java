@@ -90,7 +90,7 @@ public class GoldMineralDetector_3_white extends DogeCVDetector implements FTCMo
 
     }
 
-    public void init(HardwareMap ahwMap){
+    public void initHardware(HardwareMap ahwMap){
         super.init(ahwMap.appContext, CameraViewDisplay.getInstance());
         useDefaults();
         enable();

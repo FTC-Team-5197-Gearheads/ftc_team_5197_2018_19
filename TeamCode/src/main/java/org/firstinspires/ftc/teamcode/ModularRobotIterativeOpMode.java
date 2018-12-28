@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 /**
  * This is NOT an Opmode
  *
- * This class adds the requirement of using init() in an interative opmode to initialize modular
+ * This class adds the requirement of using initHardware() in an interative opmode to initialize modular
  * robot systems.
  *
  * Version history

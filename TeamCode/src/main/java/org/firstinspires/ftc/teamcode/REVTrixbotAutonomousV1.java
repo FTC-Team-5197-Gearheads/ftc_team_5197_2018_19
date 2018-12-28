@@ -23,8 +23,8 @@ public class REVTrixbotAutonomousV1 extends ModularRobotIterativeOpMode {
     private REVTrixbot robot = new REVTrixbot();
 
     public void init(){
-        robot.dt.init(hardwareMap);
-        robot.goldLocator.init(hardwareMap);
+        robot.dt.initHardware(hardwareMap);
+        robot.goldLocator.initHardware(hardwareMap);
     }
 
     @Override

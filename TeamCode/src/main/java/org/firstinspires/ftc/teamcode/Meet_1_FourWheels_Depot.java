@@ -31,11 +31,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -102,9 +100,9 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
 
         // Init robot
 
-        robot.dt.init(hardwareMap);
-        robot.idenfierFor5197Depositer.init(hardwareMap);
-        //robot.roverRuckusRevTrixBotLift.init(hardwareMap); TODO change for new lift
+        robot.dt.initHardware(hardwareMap);
+        robot.idenfierFor5197Depositer.initHardware(hardwareMap);
+        //robot.roverRuckusRevTrixBotLift.initHardware(hardwareMap); TODO change for new lift
 
         // turn on camera
         locator.enable();

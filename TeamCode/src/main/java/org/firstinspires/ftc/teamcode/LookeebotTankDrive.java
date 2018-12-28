@@ -29,9 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
  * This file provides basic Teleop driving for a Lookeebot. It is modified and simplified
@@ -59,9 +57,9 @@ public class LookeebotTankDrive extends ModularRobotIterativeOpMode {
     @Override
     public void init() {
         /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
+         * The initHardware() method of the hardware class does all the work here
          */
-        robot.dt.init(hardwareMap);
+        robot.dt.initHardware(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");    //

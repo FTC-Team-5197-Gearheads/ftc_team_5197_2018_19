@@ -29,7 +29,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * */
 
 
-public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
+public class LimitedDcMotorDrivenActuator extends Thread implements FTCModularizableSystems{
     protected DcMotor motor;
     private final double INIT_MOTOR_SPEED;
     private final String MOTOR_NAME;
@@ -112,7 +112,7 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
         this.HOLD_POSITION_WHEN_STOPPED = HOLD_POSITION_WHEN_STOPPED;
     }
 
-    public void init(HardwareMap ahwMap) {
+    public void initHardware(HardwareMap ahwMap) {
         motor = ahwMap.get(DcMotor.class, MOTOR_NAME);
         motor.setDirection(direction);
         motor.setPower(0);

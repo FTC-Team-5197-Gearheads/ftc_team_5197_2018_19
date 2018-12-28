@@ -100,11 +100,11 @@ public class Meet_2_FourWheels_Depot extends LinearOpMode {
 
         // Init robot
 
-        robot.dt.init(hardwareMap);
-        robot.idenfierFor5197Depositer.init(hardwareMap);
+        robot.dt.initHardware(hardwareMap);
+        robot.idenfierFor5197Depositer.initHardware(hardwareMap);
         //robot.revTrixBotMineralArm.laArmLifter.teleOpMove(false, true, 0.008); //sleezy but will have to do
 
-        //robot.roverRuckusRevTrixBotLift.init(hardwareMap);
+        //robot.roverRuckusRevTrixBotLift.initHardware(hardwareMap);
 
         // turn on camera
         locator.enable();
@@ -151,6 +151,7 @@ public class Meet_2_FourWheels_Depot extends LinearOpMode {
                 pos = Pos.LEFT;
             }
 
+
             switch (pos) {
                 case LEFT:
                     //do left thing
@@ -178,6 +179,7 @@ public class Meet_2_FourWheels_Depot extends LinearOpMode {
                     break;
 
             }
+
             telemetry.addData("IsFound" ,visible); // Is the bot aligned with the gold mineral
             telemetry.addData("X Pos" , x); // Gold X pos.
             telemetry.addData("Pos" , text); // Gold X pos.
