@@ -57,10 +57,10 @@ public class Trainerbot
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;
 
     // Trainerbot specific drive train members.
-    static final double     WHEEL_DIAMETER_INCHES   = 3.0 ;
+    static final double     WHEEL_DIAMETER_INCHES   = 2.87;//3.0 * 1.0; //making 10% smaller to increase rotations
     static final double     DRIVE_WHEEL_SEPARATION  = 14.875 ;
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-      (WHEEL_DIAMETER_INCHES * 3.1415);
+      (WHEEL_DIAMETER_INCHES * Math.PI);
 
     // Trainerbot specific motor and actuator members.
     public DcMotor leftDrive   = null;
@@ -72,6 +72,9 @@ public class Trainerbot
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
+    TwoWheelDriveTrain dt = new TwoWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
+            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, DcMotor.RunMode.RUN_USING_ENCODER,
+            "EH1motor0", "EH1motor1");
 
     /* Constructor */
     public Trainerbot(){

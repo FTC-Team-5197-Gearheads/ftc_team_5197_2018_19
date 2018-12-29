@@ -134,6 +134,7 @@ public class TwoWheelDriveTrain extends ModularDriveTrain {
         double leftSpeed = speed * (radius - DRIVE_WHEEL_SEPARATION/2.0)/
                 (radius + DRIVE_WHEEL_SEPARATION);
         double rightSpeed = speed;
+        //TODO consider writing to global leftPower and right power
 
         int newLeftTarget;
         int newRightTarget;
@@ -148,15 +149,15 @@ public class TwoWheelDriveTrain extends ModularDriveTrain {
 
         setModeOfAllMotors(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftDrive.setPower(Math.abs(leftPower));
-        rightDrive.setPower(Math.abs(rightPower));
+        leftDrive.setPower(Math.abs(leftSpeed));
+        rightDrive.setPower(Math.abs(rightSpeed));
 
         //Wait for motors to move to position
         while(leftDrive.isBusy() && rightDrive.isBusy()){}
 
         //Stop all motors
-        leftDrive.setTargetPosition(0);
-        rightDrive.setTargetPosition(0);
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
 
         setModeOfAllMotors(DcMotor.RunMode.RUN_USING_ENCODER);
     }
