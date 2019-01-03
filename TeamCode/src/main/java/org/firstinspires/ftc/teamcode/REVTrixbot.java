@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.support.annotation.Nullable;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -86,8 +88,12 @@ public class REVTrixbot extends GenericFTCRobot
 
     JavaThreadDrivetrain threadDT; //instantiate in opmode, where run method is defined
 
+    JavaThreadMineralLifter threadMineralLifter;
+
 
     GoldMineralDetector_2 goldLocator;
+
+    Thread goldLocationUpdater; //need to use Thread as GoldLocator is Runnable since it cannot be subclassed
 
     TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.62,0.2, "EH1servo5"); //move to 180 at initHardware. Then to close to
 
@@ -117,7 +123,62 @@ public class REVTrixbot extends GenericFTCRobot
         }
     }
 
-    public class MineralLifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
+    public static class JavaThreadMineralLifter extends MineralLifter{ //wrapper so parameters don't need to be inputted again in opmodes
+        JavaThreadMineralLifter(){
+            super(0, 0.9,
+                    0, 3200, 0,
+                    10, "EH2servo0", "EH2servo1",
+                    "EH2motor0", "EH2motor1");
+        }
+
+        ThreadedArmLifter threadedArmLifter;
+        ThreadedLinearActuatorArm threadedLinearActuatorArm;
+
+        @Override
+        public void interrupt() {  //probably more professional way, but for now, this interrupts the entire MineralLifterSystem
+            super.interrupt();
+            threadedArmLifter.interrupt();
+            threadedLinearActuatorArm.interrupt();
+        }
+
+        @Override
+        public void initHardware(HardwareMap ahwMap) {
+            threadedArmLifter.initHardware(ahwMap);
+            threadedLinearActuatorArm.initHardware(ahwMap);
+        }
+
+        public static class ThreadedArmLifter extends LimitedDcMotorDrivenActuator{
+
+
+            private static final String LA_ARM_LIFTER_MOTOR_NAME = "EH2motor0";
+            private static final int LA_ARM_LIFTER_STOWED_ROTATIONS = 0;
+            private static final int LA_ARM_LIFTER_ERECT_ROTATIONS = 3200;
+
+            ThreadedArmLifter(){
+                super(LA_ARM_LIFTER_MOTOR_NAME,
+                        LA_ARM_LIFTER_STOWED_ROTATIONS, LA_ARM_LIFTER_ERECT_ROTATIONS, DcMotorSimple.Direction.FORWARD,
+                        false, false, true, null,
+                        null, null,
+                        true, false, true,0.0);
+            }
+        }
+
+        public static class ThreadedLinearActuatorArm extends LimitedDcMotorDrivenActuator{
+            private static final String LA_MOTOR_NAME = "EH2motor1";
+            private static final int LA_RETRACTED_ROTATIONS = 0;
+            private static final int LA_EXTENDED_ROTATIONS = 50;
+            public ThreadedLinearActuatorArm(){
+                super(LA_MOTOR_NAME, LA_RETRACTED_ROTATIONS, LA_EXTENDED_ROTATIONS, DcMotorSimple.Direction.FORWARD, false,
+                        false, true, null, null,
+                        null,
+                        true, false, true,1);
+            }
+        }
+
+
+    }
+
+    public static class MineralLifter extends Thread implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;
         private Servo gripper_wrist = null;
         private final double GRIPPER_CLOSED;
@@ -135,6 +196,7 @@ public class REVTrixbot extends GenericFTCRobot
             this.GRIPPER_OPEN = GRIPPER_OPEN;
             this.GRIPPER_SERVO_NAME = GRIPPER_SERVO_NAME;
             this.GRIPPER_WRIST_NAME = GRIPPER_WRIST_NAME;
+
 
             laArmLifter = new LimitedDcMotorDrivenActuator(LA_ARM_LIFTER_MOTOR_NAME,
                     LA_ARM_LIFTER_STOWED_ROTATIONS, LA_ARM_LIFTER_ERECT_ROTATIONS, DcMotorSimple.Direction.FORWARD,

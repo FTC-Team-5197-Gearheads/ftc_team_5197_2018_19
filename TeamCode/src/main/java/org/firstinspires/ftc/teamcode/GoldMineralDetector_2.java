@@ -34,7 +34,7 @@ import java.util.List;
  * v 0.2   11/02/18 added this Javadoc
  */
 
-public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModularizableSystems{
+public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModularizableSystems, Runnable{
 
     //Position enum
 
@@ -100,6 +100,10 @@ public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModulari
 
     }
 
+    @Override
+    public void run() {
+
+    }
 
     @Override
     public Mat process(Mat input) {
@@ -267,7 +271,10 @@ public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModulari
         return found;
     }
 
-    public void updateGoldPos(){
+    public void updateGoldPos(Pos newPos){
+        pos = newPos;
+
+        /*
         double x = getXPosition();
         if(isFound()){
             if (x < LEFTPOINT) {
@@ -290,16 +297,17 @@ public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModulari
             pos = Pos.UNKNOWN;
             TelemetryPosText = "Unknown";
         }
+        */
 
     }
 
     public Pos getGoldPos(){
-        updateGoldPos();
+        updateGoldPos(pos);
         return pos;
     }
 
     public String getGoldPosForTelemetry(){
-        updateGoldPos();
+        updateGoldPos(pos);
         return TelemetryPosText;
     }
 }

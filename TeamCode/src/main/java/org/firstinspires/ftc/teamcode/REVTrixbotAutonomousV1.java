@@ -38,4 +38,9 @@ public class REVTrixbotAutonomousV1 extends ModularRobotIterativeOpMode {
 
         //
     }
+
+    @Override
+    public void stop() {
+
+    }
 }
