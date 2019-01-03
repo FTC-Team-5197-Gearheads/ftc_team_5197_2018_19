@@ -84,8 +84,10 @@ public class REVTrixbot extends GenericFTCRobot
             WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "EH1motor0", "EH1motor1",
             "EH1motor2", "EH1motor3");
 
+    JavaThreadDrivetrain threadDT; //instantiate in opmode, where run method is defined
 
-    GoldMineralDetector_2 goldLocator = new GoldMineralDetector_2();
+
+    GoldMineralDetector_2 goldLocator;
 
     TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.62,0.2, "EH1servo5"); //move to 180 at initHardware. Then to close to
 
@@ -104,6 +106,16 @@ public class REVTrixbot extends GenericFTCRobot
             10, "EH2servo0", "EH2servo1",
             "EH2motor0", "EH2motor1"); //Not ready.
 
+
+    public static class JavaThreadDrivetrain extends FourWheelDriveTrain{  //TODO: Temporaily giving it this name to ease transition to multithreaded code.
+        JavaThreadDrivetrain(){
+            super(REVTrixbot.COUNTS_PER_MOTOR_REV, REVTrixbot.DRIVE_GEAR_REDUCTION,
+                    REVTrixbot.WHEEL_DIAMETER_INCHES, REVTrixbot.DRIVE_WHEEL_SEPARATION,
+                    REVTrixbot.RUNMODE, "EH1motor0",
+                    "EH1motor1", "EH1motor2",
+                    "EH1motor3");
+        }
+    }
 
     public class MineralLifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;

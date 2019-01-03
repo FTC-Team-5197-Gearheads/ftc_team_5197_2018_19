@@ -54,7 +54,14 @@ public class REVSensorDigitalTouch extends OpMode{
     DigitalChannel digitalTouch;  // Hardware Device Object
     DcMotor motor;
     RevTouchSensor revTouchSensor;
-    TouchSensorMotor touchMotor = new TouchSensorMotor();
+    TouchSensorMotor touchMotor = new TouchSensorMotor(){
+        @Override
+        public void run() {
+            super.run();
+            while(!revTouchSensor.isPressed());
+            motor.setPower(0.6);
+        }
+    };
 
 
     @Override
@@ -64,7 +71,7 @@ public class REVSensorDigitalTouch extends OpMode{
 
     @Override
     public void start() {
-
+        touchMotor.start(); //creates new thread and calls run();
     }
 
     @Override
@@ -92,14 +99,6 @@ class TouchSensorMotor extends Thread implements FTCModularizableSystems{
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor.setPower(0);
         revTouchSensor = ahwMap.get(RevTouchSensor.class, "sensor_digital");
-    }
-
-
-    @Override
-    public void run() {
-        super.run();
-        while(!revTouchSensor.isPressed());
-        motor.setPower(0.6);
     }
 }
 
