@@ -19,31 +19,35 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 @Autonomous(name = "Meet 3 REVTrixbot Depot", group = "Meet 3")
 public class Meet_3_FourWheels_Depot extends OpMode {
     REVTrixbot robot = new REVTrixbot();
-    volatile boolean isLanded = false; //volatile as modified by different threads https://www.javamex.com/tutorials/synchronization_volatile.shtml
-    volatile boolean isUnhooked = false;
-    private static final String DRIVETRAIN_STATUS_STRING = "Drivetrain Status";
-    private static final String MINERAL_LIFTER_STATUS_STRING = "Mineral Lifter Status";
+    volatile private boolean isLanded = false; //volatile as modified by different threads https://www.javamex.com/tutorials/synchronization_volatile.shtml
+    volatile private boolean isUnhooked = false;
+    volatile private static String driveTrainStatus = "Drivetrain Status";
+    volatile private static String mineralLifterStatus = "Mineral Lifter Status";
+    volatile private static String goldLocatorStatus = "Gold Locator Status";
+
     private static final String INITIALIZED = "INITIALIZED";
-    private static final String GOLD_LOCATOR_STATUS_STRING = "Gold Locator Status";
     private static final String EXECUTION_COMPLETE_STRING = "Execution Complete";
+
+    volatile private boolean visible = false;
+    volatile private Pos pos = Pos.UNKNOWN;
+    volatile private double x = 0.0;
+    volatile private double y = 0.0;
+
 
     @Override
     public void init() {  //Define the behaviour of systems and initialize hardware
-
         //Drivetrain Code
         robot.threadDT = new REVTrixbot.JavaThreadDrivetrain(){
             @Override
             public void run() {
                 super.run();
-                telemetry.addData(DRIVETRAIN_STATUS_STRING, "Waiting for Landing");
-                telemetry.update();
+                driveTrainStatus = "Waiting for Landing";
                 while(!isLanded);
-                telemetry.addData(DRIVETRAIN_STATUS_STRING, "Moving to Gold Mineral Check Location");
-                telemetry.update();
+                driveTrainStatus = "Moving to Gold Mineral Inspection Location";
                 encoderDrive(1, -3, 3);
                 isUnhooked = true;
                 encoderDrive(1, 3, 3); //TODO. Figure our driving to gold position
-                telemetry.addData(DRIVETRAIN_STATUS_STRING,"Moving to Depot and then Crater");
+                driveTrainStatus = "Moving to Depot and then Crater";
                 switch (robot.goldLocator.getGoldPos()){
                     case LEFT:
                         break;
@@ -57,14 +61,11 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                     default:
                         break;
                 }
-
-                telemetry.addData(DRIVETRAIN_STATUS_STRING, EXECUTION_COMPLETE_STRING);
-                telemetry.update();
-
+                driveTrainStatus = EXECUTION_COMPLETE_STRING;
             }
         };
         robot.threadDT.initHardware(hardwareMap);
-        telemetry.addData(DRIVETRAIN_STATUS_STRING, INITIALIZED);
+        driveTrainStatus = INITIALIZED;
 
         //Mineral Lifter Code
         robot.threadMineralLifter = new REVTrixbot.JavaThreadMineralLifter();
@@ -73,8 +74,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
             @Override
             public void run() {
                 super.run();
-                telemetry.addData(MINERAL_LIFTER_STATUS_STRING, "Landing");
-                telemetry.update();
+                mineralLifterStatus = "Landing";
                 move(1, 30); //TODO decide if breaking is necesarry
                 try {
                     sleep(1000); //allow time for robot to fall
@@ -83,23 +83,20 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                 }
                 isLanded = true;
                 //TODO lock the linear actuator
-                telemetry.addData(MINERAL_LIFTER_STATUS_STRING, "Waiting for robot to unhook");
-                telemetry.update();
+                mineralLifterStatus = "Waiting for robot to unhook";
                 while(!isUnhooked); //wait for robot to unhook itself
-                telemetry.addData(MINERAL_LIFTER_STATUS_STRING, "Retracting Arm");
-                telemetry.update();
-               moveToMinPos(0.1); //TODO check if bug is here in method moveToMinPos()
+                mineralLifterStatus = "Retracting Arm";
+               //moveToMinPos(0.1); //TODO check if bug is here in method moveToMinPos()
                 try { //TEMPORARY to simulate the time it takes for above statement
                     sleep(1000); //allow time for robot to fall
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                telemetry.addData(MINERAL_LIFTER_STATUS_STRING, EXECUTION_COMPLETE_STRING);
-                telemetry.update();
+                mineralLifterStatus = EXECUTION_COMPLETE_STRING;
             }
         };
         robot.threadMineralLifter.initHardware(hardwareMap);
-        telemetry.addData(MINERAL_LIFTER_STATUS_STRING, INITIALIZED);
+        mineralLifterStatus = INITIALIZED;
 
         //Gold Locator Code
         robot.goldLocator = new GoldMineralDetector_2(){ //redefine behaviour
@@ -119,10 +116,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
             }
         };
         robot.goldLocationUpdater = new Thread(robot.goldLocator){
-            public boolean visible = false;
-            public Pos pos = Pos.UNKNOWN;
-            private double x = 0.0;
-            private double y = 0.0;
+
             private final static int MIDPOINT = 0;
             private final static int LEFTPOINT = -106;
             private final static int RIGHTPOINT = 106;
@@ -130,6 +124,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
             @Override
             public void run() {
                 super.run();
+                goldLocatorStatus = "Active";
                 while(!isInterrupted()){
                     visible = robot.goldLocator.isFound();
                     x = robot.goldLocator.getXPosition() - MIDPOINT;
@@ -164,13 +159,23 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                     telemetry.update();
                     */
                 }
+                goldLocatorStatus = "Inactive"; //don't know if this will ever display;
             }
         };
         robot.goldLocator.tune();
         robot.goldLocator.initHardware(hardwareMap);
-        telemetry.addData(GOLD_LOCATOR_STATUS_STRING, INITIALIZED); //TODO move all telementry to speical telementry reporting funciotn
+        goldLocatorStatus = INITIALIZED;
+    }
 
-        telemetry.update();
+    @Override
+    public void internalPostInitLoop() {
+        super.internalPostInitLoop();
+        telemetry.addData("Drivetrain Status", driveTrainStatus);
+        telemetry.addData("Mineral Lifter Status", mineralLifterStatus);
+        telemetry.addData("Gold Locator Status", goldLocatorStatus);
+        telemetry.addData("   Is Found:", visible);
+        telemetry.addData("   X Pos:", x);
+        telemetry.addData("   Gold Pos:", pos);
     }
 
     @Override
@@ -181,8 +186,6 @@ public class Meet_3_FourWheels_Depot extends OpMode {
 
         robot.goldLocator.enable();
         robot.goldLocationUpdater.start();
-        telemetry.addData("Locator Status", "Enabled");
-        telemetry.update();
 
         robot.threadMineralLifter.threadedArmLifter.start();
 
@@ -192,6 +195,17 @@ public class Meet_3_FourWheels_Depot extends OpMode {
     @Override
     public void loop() {  //Control threads as needed.
 
+    }
+
+    @Override
+    public void internalPostLoop() { //for updating telemtry per FTC Javadocs.
+        super.internalPostLoop();
+        telemetry.addData("Drivetrain Status", driveTrainStatus);
+        telemetry.addData("Mineral Lifter Status", mineralLifterStatus);
+        telemetry.addData("Gold Locator Status", goldLocatorStatus);
+        telemetry.addData("   Is Found:", visible);
+        telemetry.addData("   X Pos:", x);
+        telemetry.addData("   Gold Pos:", pos);
     }
 
     @Override
