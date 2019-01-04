@@ -173,9 +173,9 @@ public class Meet_3_FourWheels_Depot extends OpMode {
         telemetry.addData("Drivetrain Status", driveTrainStatus);
         telemetry.addData("Mineral Lifter Status", mineralLifterStatus);
         telemetry.addData("Gold Locator Status", goldLocatorStatus);
-        telemetry.addData("   Is Found:", visible);
-        telemetry.addData("   X Pos:", x);
-        telemetry.addData("   Gold Pos:", pos);
+        telemetry.addData("   Is Found", visible);
+        telemetry.addData("   X Pos", x);
+        telemetry.addData("   Gold Pos", pos);
     }
 
     @Override
@@ -203,9 +203,9 @@ public class Meet_3_FourWheels_Depot extends OpMode {
         telemetry.addData("Drivetrain Status", driveTrainStatus);
         telemetry.addData("Mineral Lifter Status", mineralLifterStatus);
         telemetry.addData("Gold Locator Status", goldLocatorStatus);
-        telemetry.addData("   Is Found:", visible);
-        telemetry.addData("   X Pos:", x);
-        telemetry.addData("   Gold Pos:", pos);
+        telemetry.addData("   Is Found", visible);
+        telemetry.addData("   X Pos", x);
+        telemetry.addData("   Gold Pos", pos);
     }
 
     @Override
