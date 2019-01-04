@@ -95,7 +95,7 @@ public class REVTrixbot extends GenericFTCRobot
 
     Thread goldLocationUpdater; //need to use Thread as GoldLocator is Runnable since it cannot be subclassed
 
-    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.62,0.2, "EH1servo5"); //move to 180 at initHardware. Then to close to
+    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.62,0.2, "EH1servo5"); //moveRotations to 180 at initHardware. Then to close to
 
     MineralPushingPaddles revTrixbotMineralPaddles = new MineralPushingPaddles(0.0, 0.0, 0.4, "EH1servo3", "EH1servo4");
 

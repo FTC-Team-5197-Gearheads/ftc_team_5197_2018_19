@@ -56,7 +56,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Lookeebot_4Wheels
 {
     // General conversion constants.
-    static final double MM_PER_IN = 25.4;   // ** to do: move to Generic robot class
+    static final double MM_PER_IN = 25.4;   // ** to do: moveRotations to Generic robot class
     static final double IN_PER_MM = 1/MM_PER_IN;
 
     // Specific measurements for this robot class.

@@ -92,7 +92,7 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
 
     public void teleOpArcadeDrive(Gamepad driverGamepad, F310JoystickInputNames.Joysticks selectedDrivingStick){
 
-        //float leftPower = 0f; //may want to move these as field variables. Probably should not initialize every time.
+        //float leftPower = 0f; //may want to moveRotations these as field variables. Probably should not initialize every time.
         //float rightPower = 0f;
 
         if(selectedDrivingStick == F310JoystickInputNames.Joysticks.LEFT_STICK){
@@ -138,7 +138,7 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         FrontRightDrive.setPower(Math.abs(speed));
         RearRightDrive.setPower(Math.abs(speed));
 
-        //Wait for motors to move to position
+        //Wait for motors to moveRotations to position
         while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy()))){}
 
         //Set motor speed to zero
@@ -196,7 +196,7 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         FrontRightDrive.setPower(Math.abs(rightSpeed));
         RearRightDrive.setPower(Math.abs(rightSpeed));
 
-        //Wait for motors to move to position
+        //Wait for motors to moveRotations to position
         while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy()))){}
 
         //Stop All motors

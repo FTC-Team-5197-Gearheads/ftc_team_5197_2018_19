@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
  * Version history
  * ======  =======
  * v 0.1    11/02/18 @Lorenzo Pedroza. Implemented methods for endoderDrive and turnAngleRadiusDrive, and accessor methods for encoder counts //TODO Test them
- * v 0.5    11/03/18 @Lorenzo Pedroza. Added while statements in encoder methods to allow motors to move to position
+ * v 0.5    11/03/18 @Lorenzo Pedroza. Added while statements in encoder methods to allow motors to moveRotations to position
  * v 0.6    11/07/18 Ir is now easier to give motor unique names; names are now required parameter
  */
 
@@ -106,7 +106,7 @@ public class TwoWheelDriveTrain extends ModularDriveTrain {
         leftDrive.setPower(Math.abs(speed));
         rightDrive.setPower(Math.abs(speed));
 
-        //Wait for motors to move to position
+        //Wait for motors to moveRotations to position
         while(leftDrive.isBusy() && rightDrive.isBusy()){}
 
         //Set motor speed to zero
@@ -152,7 +152,7 @@ public class TwoWheelDriveTrain extends ModularDriveTrain {
         leftDrive.setPower(Math.abs(leftSpeed));
         rightDrive.setPower(Math.abs(rightSpeed));
 
-        //Wait for motors to move to position
+        //Wait for motors to moveRotations to position
         while(leftDrive.isBusy() && rightDrive.isBusy()){}
 
         //Stop all motors

@@ -44,15 +44,20 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                 driveTrainStatus = "Waiting for Landing";
                 while(!isLanded);
                 driveTrainStatus = "Moving to Gold Mineral Inspection Location";
-                encoderDrive(1, -3, 3);
+                encoderDrive(1, 3, -3); //TODO work on zero radius turn method or improve turnAngleRadius drive method for pivoting on axis
+                //or tunrAngleRadiusDrive(0.5, 20, 0 radius)
                 isUnhooked = true;
-                encoderDrive(1, 3, 3); //TODO. Figure our driving to gold position
+                turnAngleRadiusDrive(0.5, -160, 10 ); //TODO. Figure our driving to gold position. Maybe need elipsoid method?
+
                 driveTrainStatus = "Moving to Depot and then Crater";
                 switch (robot.goldLocator.getGoldPos()){
                     case LEFT:
+                        encoderDrive(1, -6, 6);
+                        turnAngleRadiusDrive(0.5, -270, 10);
                         break;
 
                     case RIGHT:
+                        turnAngleRadiusDrive(0.5, 180, 10);
                         break;
 
                     case MID:
@@ -75,7 +80,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
             public void run() {
                 super.run();
                 mineralLifterStatus = "Landing";
-                move(1, 30); //TODO decide if breaking is necesarry
+                moveRotations(1, 30); //TODO decide if breaking is necesarry
                 try {
                     sleep(1000); //allow time for robot to fall
                 } catch (InterruptedException e) {
@@ -86,7 +91,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                 mineralLifterStatus = "Waiting for robot to unhook";
                 while(!isUnhooked); //wait for robot to unhook itself
                 mineralLifterStatus = "Retracting Arm";
-               //moveToMinPos(0.1); //TODO check if bug is here in method moveToMinPos()
+                moveToMinPos(0.1); //TODO check if bug in moveToMinPos() fixed
                 try { //TEMPORARY to simulate the time it takes for above statement
                     sleep(1000); //allow time for robot to fall
                 } catch (InterruptedException e) {
@@ -152,7 +157,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                     }
                     robot.goldLocator.updateGoldPos(pos);
 
-                    /*TODO move this to the specialized telementry reporting funciotn in OPMOde
+                    /*TODO moveRotations this to the specialized telementry reporting funciotn in OPMOde
                     telemetry.addData("IsFound", visible);
                     telemetry.addData("X Pos", x);
                     telemetry.addData("Pos", pos);

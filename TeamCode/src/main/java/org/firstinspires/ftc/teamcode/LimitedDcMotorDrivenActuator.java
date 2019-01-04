@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 /**
  * THIS IS NOT AN OPMODE
  * IT is a way of creating a Dc motorized actuator that has limits to movement.
@@ -166,18 +164,23 @@ public class LimitedDcMotorDrivenActuator extends Thread implements FTCModulariz
 
     }
 
-    public void move(double speed, @Nullable Integer rotations) throws IllegalArgumentException {
+    public void moveDegrees(double speed, int degrees){
+        //figure out max rotations of motor by getting motor name
+        moveRotations(speed, (int)((degrees/360)*motor.getMotorType().getTicksPerRev())); //TODO see how/if this works. Is rounding or truncating? effect?
+
+    }
+
+    public void moveRotations(double speed, @Nullable Integer rotations) throws IllegalArgumentException {
         int rotationTarget;
-        if(rotations.equals(MINIMUM_ROTATIONS)) //need to negate to go down.Which means making it equal to negative maximum rotaions so it goes down.
-            rotations = -MAXIMUM_ROTAIONS ; //rotaions = rotaions - Minimum Roations//TODO verify this
+
         if (rotations == null &&( !HAS_MAXIMUM_LIMIT_SWITCH || !HAS_MINIMUM_LIMIT_SWITCH ) && !HAS_ENCODER) {
             throw new IllegalArgumentException("Cannot limit motion without encoders at both limits if missing encoder.");
         }
 
+        //basic physics. Speed is |velocity| (speed is always positive)
         if(rotations < 0)
             speed = -Math.abs(speed);
             //motor.setPower(-Math.abs(speed));
-
         else
             speed = Math.abs(speed);
            // motor.setPower(Math.abs(speed)); //direction set.
@@ -188,16 +191,15 @@ public class LimitedDcMotorDrivenActuator extends Thread implements FTCModulariz
             //speed = -Math.abs(speed);
             minimumLimitSwitch.setState(false);
             motor.setPower(speed);
-            while (true/*!getMinimumLimitSwitchPressed() && speed <0*/){
+            while (/*true*/!getMinimumLimitSwitchPressed() && speed <0){ //TODO figure out what's going on with getting limit switch states
                 if(HAS_ENCODER){
                     if(motor.getCurrentPosition() < MINIMUM_ROTATIONS - ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH)  //play around with this threshold?
-                    {
                         break;
-                    }
-
                 }
+                /*
                 if(!getMinimumLimitSwitchPressed())
                     break;
+                 */
             } //wait for limit swutch to press. But break if passed the rotation limits (as a safety in case limit switch does not work)
             motor.setPower(0); //then don't forget to stop motor.
             if(HAS_ENCODER){
@@ -210,14 +212,11 @@ public class LimitedDcMotorDrivenActuator extends Thread implements FTCModulariz
 
         //if (HAS_MAXIMUM_LIMIT_SWITCH || (rotations == MAXIMUM_ROTAIONS && HAS_MAXIMUM_LIMIT_SWITCH)) {  //default to these commands if limit switch. For maximum, exit method after. For minimum, it is possible to reset encoder, so no need to exit.
         if (HAS_MAXIMUM_LIMIT_SWITCH && speed > 0){
-            speed = Math.abs(speed);
             motor.setPower(speed);
             while (!maximumLimitSwitch.getState() && speed > 0) {
                 if(HAS_ENCODER){
                     if(motor.getCurrentPosition() > MAXIMUM_ROTAIONS + ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH)  //play around with this threshold?
-                    {
                         break;
-                    }
                 }
             }
             motor.setPower(0);
@@ -249,49 +248,44 @@ public class LimitedDcMotorDrivenActuator extends Thread implements FTCModulariz
             motor.setTargetPosition(rotationTarget);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setPower(speed);
-            while (motor.isBusy()) ;//wait for motor to move
+            while (motor.isBusy()) ;//wait for motor to moveRotations
             motor.setPower(0);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
     public void moveToMaxPos(double speed){
-        move(Math.abs(speed), MAXIMUM_ROTAIONS);
+        moveRotations(Math.abs(speed), MAXIMUM_ROTAIONS-getCurrentPosition()); //get rotations left to move to maz
     }
 
     public void moveToMinPos(double speed){
-        move(Math.abs(speed), MINIMUM_ROTATIONS);
+        moveRotations(Math.abs(speed), MINIMUM_ROTATIONS-getCurrentPosition());//e.g. 0-300 = -300. Move -300 rotoations to get to 0.
     }
 
     public void teleOpMove(boolean moveToMaxPosButton, boolean moveToMinPosButton, double speed){
         //always test limit switches first. Best limit test as sense physical limit.
-        if (moveToMaxPosButton || moveToMinPosButton)
-                {
-                    if (HAS_MAXIMUM_LIMIT_SWITCH){
-                        if(!maximumLimitSwitch.getState() && moveToMaxPosButton){
-                            speed = (Math.abs(speed));
-                        }
+        if (moveToMaxPosButton || moveToMinPosButton) {
+            if (HAS_MAXIMUM_LIMIT_SWITCH){
+                if(!maximumLimitSwitch.getState() && moveToMaxPosButton){
+                    speed = (Math.abs(speed));
+                }
+                else speed = 0;
+            }
 
-                        else speed = 0;
-                    }
-
-                    if(HAS_MINIMUM_LIMIT_SWITCH){
-                        if(!minimumLimitSwitch.getState() && moveToMinPosButton){
-                            speed = (-(Math.abs(speed)));
-                        }
-
-                        else speed = 0;
-                    }
-
-                    if (HAS_ENCODER){
-                        if((motor.getCurrentPosition() <= MAXIMUM_ROTAIONS) && moveToMaxPosButton){
-                            speed = (Math.abs(speed));
-                        }
-
-                        else if ((motor.getCurrentPosition() >= MINIMUM_ROTATIONS) && moveToMinPosButton){
+            if(HAS_MINIMUM_LIMIT_SWITCH){
+                if(!minimumLimitSwitch.getState() && moveToMinPosButton){
                     speed = (-(Math.abs(speed)));
                 }
+                else speed = 0;
+            }
 
+            if (HAS_ENCODER){
+                if((motor.getCurrentPosition() <= MAXIMUM_ROTAIONS) && moveToMaxPosButton){
+                    speed = (Math.abs(speed));
+                }
+                else if ((motor.getCurrentPosition() >= MINIMUM_ROTATIONS) && moveToMinPosButton){
+                    speed = (-(Math.abs(speed)));
+                }
                 else speed = 0;
             }
         }
@@ -357,7 +351,7 @@ public class LimitedDcMotorDrivenActuator extends Thread implements FTCModulariz
     }
 
     private boolean getMinimumLimitSwitchPressed(){
-        return !minimumLimitSwitch.getState(); //inverts so true.
+        return !minimumLimitSwitch.getState(); //inverts so true. //TODO figure this out
     }
 
     public boolean getIsBusy(){

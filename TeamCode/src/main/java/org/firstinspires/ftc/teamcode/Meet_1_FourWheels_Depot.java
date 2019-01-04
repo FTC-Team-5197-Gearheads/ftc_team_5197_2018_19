@@ -194,7 +194,7 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         robot.dt.encoderDrive(1, 3, 3);
         sleep(1000);
 
-        //robot.roverRuckusRevTrixBotLift.moveToMinPos(1); //do so robot can move under lander. TODO. Put it back
+        //robot.roverRuckusRevTrixBotLift.moveToMinPos(1); //do so robot can moveRotations under lander. TODO. Put it back
         sleep(2000);
 
         robot.dt.encoderDrive(1, -2, -4); //TODO due other way as to avoid hitting other robots
@@ -212,7 +212,7 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         // build a profile to handle target on left
         robot.dt.encoderDrive(1, -10, 10); //turn to gold mineral
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -45, -45); //move to gold mineral
+        robot.dt.encoderDrive(-1, -45, -45); //moveRotations to gold mineral
         sleep(1500);
         robot.dt.encoderDrive(-1, 18.75, -18.75); //turn to depot
         sleep(1000);
@@ -254,11 +254,11 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         // build a profile to handle target on right
         robot.dt.encoderDrive(1, -4, 4); //turn to gold
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -22, -22); //move to gold
+        robot.dt.encoderDrive(-1, -22, -22); //moveRotations to gold
         sleep(1500);
         robot.dt.encoderDrive(1, 4, -4); //turn to depot
         sleep(1000);
-        robot.dt.encoderDrive(1, -35, -35); //move to depot
+        robot.dt.encoderDrive(1, -35, -35); //moveRotations to depot
         sleep(1000);
         robot.idenfierFor5197Depositer.depositTeamIdentifier();
         sleep(1000);

@@ -128,7 +128,7 @@ public class RedLookWhack extends LinearOpMode {
               (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
             }
 
-            // Set motors in reasonable condition for next move.
+            // Set motors in reasonable condition for next moveRotations.
             robot.leftDrive.setPower(0);
             robot.rightDrive.setPower(0);
             robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

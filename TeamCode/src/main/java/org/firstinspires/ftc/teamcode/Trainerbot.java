@@ -47,7 +47,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  * Motor channel:  Left  drive motor:        "motor0"
  * Motor channel:  Right drive motor:        "motor1"
- * Servo channel:  Servo to move paddle:     "paddle"
+ * Servo channel:  Servo to moveRotations paddle:     "paddle"
  */
 
 public class Trainerbot

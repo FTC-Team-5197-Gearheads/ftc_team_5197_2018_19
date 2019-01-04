@@ -117,8 +117,8 @@ public class Calibrate extends LinearOpMode {
     }
 
     /*
-     *  Method to perfmorm a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
+     *  Method to perfmorm a relative moveRotations, based on encoder counts.
+     *  Encoders are not reset as the moveRotations is based on the current position.
      *  Move will stop if any of three conditions occur:
      *  1) Move gets to the desired position
      *  2) Move runs out of time
@@ -175,7 +175,7 @@ public class Calibrate extends LinearOpMode {
             robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            //  sleep(250);   // optional pause after each move
+            //  sleep(250);   // optional pause after each moveRotations
         }
     }
 
