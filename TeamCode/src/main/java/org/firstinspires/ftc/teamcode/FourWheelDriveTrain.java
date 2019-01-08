@@ -197,14 +197,14 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         RearRightDrive.setPower(Math.abs(rightSpeed));
 
         //Wait for motors to moveRotations to position
-        while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy()))){}
+        while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy())));
 
         //Stop All motors
 
-        FrontLeftDrive.setTargetPosition(0);
-        FrontRightDrive.setTargetPosition(0);
-        RearLeftDrive.setTargetPosition(0);
-        RearRightDrive.setTargetPosition(0);
+        FrontLeftDrive.setPower(0);
+        FrontRightDrive.setPower(0);
+        RearLeftDrive.setPower(0);
+        RearRightDrive.setPower(0);
 
         setModeOfAllMotors(DcMotor.RunMode.RUN_USING_ENCODER);
     }

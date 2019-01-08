@@ -4,10 +4,10 @@
  * for each system in the robot. This enables the safe use of while loops, henceforth enabling the
  * use of limit switches.
  *
- *
  * Version History
- *========================  ======= ================================================================
- * @Author Lorenzo Pedroza  v 0.1   Created basic proof of concept to test a multithreaded Revtrixbot
+ * Author                   Version   Date                       Description
+ *========================  ======= ======== ==========================================================
+ * @Author Lorenzo Pedroza  v 0.1   01/07/18      Created basic proof of concept to test a multithreaded Revtrixbot
  */
 
 package org.firstinspires.ftc.teamcode;
@@ -15,6 +15,7 @@ package org.firstinspires.ftc.teamcode;
 import com.disnodeteam.dogecv.DogeCV;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name = "Meet 3 REVTrixbot Depot", group = "Meet 3")
 public class Meet_3_FourWheels_Depot extends OpMode {
@@ -52,12 +53,12 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                 driveTrainStatus = "Moving to Depot and then Crater";
                 switch (robot.goldLocator.getGoldPos()){
                     case LEFT:
-                        encoderDrive(1, -6, 6);
-                        turnAngleRadiusDrive(0.5, -270, 10);
+                       // encoderDrive(1, -6, 6);
+                        //turnAngleRadiusDrive(0.5, -270, 10);
                         break;
 
                     case RIGHT:
-                        turnAngleRadiusDrive(0.5, 180, 10);
+                        //turnAngleRadiusDrive(0.5, 180, 10);
                         break;
 
                     case MID:
@@ -76,22 +77,38 @@ public class Meet_3_FourWheels_Depot extends OpMode {
         robot.threadMineralLifter = new REVTrixbot.JavaThreadMineralLifter();
         robot.threadMineralLifter.threadedLinearActuatorArm = new REVTrixbot.JavaThreadMineralLifter.ThreadedLinearActuatorArm();
         robot.threadMineralLifter.threadedArmLifter = new REVTrixbot.JavaThreadMineralLifter.ThreadedArmLifter(){ //define the arm behaviour
+            private static final int HIGHEST_POSITION = 3000;
+            public void moveToHighestPosition(double speed){
+                moveRotations(speed, HIGHEST_POSITION-getCurrentPosition());//if pos is 5000, 5000-3000 = need to move -2000 to get to highest position
+                //if pos is 2000, 3000-2000 = +1000 to get to middle positin
+            }
+
+            private void manuallyGoToAndSetZeroPositionAfterLanding(double speed){
+                //manually move to zero position(need to put movement code)
+
+                //at end
+                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
             @Override
             public void run() {
                 super.run();
                 mineralLifterStatus = "Landing";
-                moveRotations(1, 30); //TODO decide if breaking is necesarry
+                moveRotations(1, 300); //TODO decide if breaking is necesarry
+                mineralLifterStatus = "Waiting 1 second";
                 try {
                     sleep(1000); //allow time for robot to fall
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 isLanded = true;
-                //TODO lock the linear actuator
                 mineralLifterStatus = "Waiting for robot to unhook";
                 while(!isUnhooked); //wait for robot to unhook itself
                 mineralLifterStatus = "Retracting Arm";
-                moveToMinPos(0.1); //TODO check if bug in moveToMinPos() fixed
+                moveToMinPos(0.1);
+                mineralLifterStatus = "Moving to highest position";
+                moveToHighestPosition(0.1);
+                mineralLifterStatus = "Waiting 1 second";
                 try { //TEMPORARY to simulate the time it takes for above statement
                     sleep(1000); //allow time for robot to fall
                 } catch (InterruptedException e) {
@@ -203,7 +220,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
     }
 
     @Override
-    public void internalPostLoop() { //for updating telemtry per FTC Javadocs.
+    public void internalPostLoop() { //for updating telemetry per FTC Javadocs.
         super.internalPostLoop();
         telemetry.addData("Drivetrain Status", driveTrainStatus);
         telemetry.addData("Mineral Lifter Status", mineralLifterStatus);
