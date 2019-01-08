@@ -1,5 +1,5 @@
 /**
- * Meet 3 Code
+ * Rover Ruckus Meet 3 Code
  * This code looks different in structure from previous meets because it now utilizes multithreading
  * for each system in the robot. This enables the safe use of while loops, henceforth enabling the
  * use of limit switches.
@@ -20,11 +20,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Autonomous(name = "Meet 3 REVTrixbot Depot", group = "Meet 3")
 public class Meet_3_FourWheels_Depot extends OpMode {
     REVTrixbot robot = new REVTrixbot();
+
     volatile private boolean isLanded = false; //volatile as modified by different threads https://www.javamex.com/tutorials/synchronization_volatile.shtml
     volatile private boolean isUnhooked = false;
+    volatile private boolean isInDepot = false;
+
     volatile private static String driveTrainStatus = "Drivetrain Status";
     volatile private static String mineralLifterStatus = "Mineral Lifter Status";
     volatile private static String goldLocatorStatus = "Gold Locator Status";
+    volatile private static String teamIdentifierDepositorStatus = "Team Identifier Depositor Status";
 
     private static final String INITIALIZED = "INITIALIZED";
     private static final String EXECUTION_COMPLETE_STRING = "Execution Complete";
@@ -38,7 +42,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
     @Override
     public void init() {  //Define the behaviour of systems and initialize hardware
         //Drivetrain Code
-        robot.threadDT = new REVTrixbot.JavaThreadDrivetrain(){
+        robot.threadDT = new REVTrixbot.REVTrixbotMTDrivetrain(){
             @Override
             public void run() {
                 super.run();
@@ -74,22 +78,22 @@ public class Meet_3_FourWheels_Depot extends OpMode {
         driveTrainStatus = INITIALIZED;
 
         //Mineral Lifter Code
-        robot.threadMineralLifter = new REVTrixbot.JavaThreadMineralLifter();
-        robot.threadMineralLifter.threadedLinearActuatorArm = new REVTrixbot.JavaThreadMineralLifter.ThreadedLinearActuatorArm();
-        robot.threadMineralLifter.threadedArmLifter = new REVTrixbot.JavaThreadMineralLifter.ThreadedArmLifter(){ //define the arm behaviour
-            private static final int HIGHEST_POSITION = 3000;
-            public void moveToHighestPosition(double speed){
-                moveRotations(speed, HIGHEST_POSITION-getCurrentPosition());//if pos is 5000, 5000-3000 = need to move -2000 to get to highest position
-                //if pos is 2000, 3000-2000 = +1000 to get to middle positin
-            }
+        robot.threadMineralLifter = new REVTrixbot.REVTrixbotMTMineralLifter();
+        robot.threadMineralLifter.threadedLinearActuatorArm = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedLinearActuatorArm();
+        robot.threadMineralLifter.threadedArmLifter = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedArmLifter(){ //define the arm behaviour
 
-            private void manuallyGoToAndSetZeroPositionAfterLanding(double speed){
+            private void manuallyGoToAndSetZeroPositionAfterLanding(double speed){ //need to do this manually as they are not yet limit switches
                 //manually move to zero position(need to put movement code)
-
+                motor.setTargetPosition(-100); //TODO set target position
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motor.setPower(Math.abs(speed));
+                while(motor.isBusy()); //wait for motor to reach position
+                motor.setPower(0);
                 //at end
                 motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
+
             @Override
             public void run() {
                 super.run();
@@ -105,7 +109,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                 mineralLifterStatus = "Waiting for robot to unhook";
                 while(!isUnhooked); //wait for robot to unhook itself
                 mineralLifterStatus = "Retracting Arm";
-                moveToMinPos(0.1);
+                manuallyGoToAndSetZeroPositionAfterLanding(0.1);//moveToMinPos(0.1);
                 mineralLifterStatus = "Moving to highest position";
                 moveToHighestPosition(0.1);
                 mineralLifterStatus = "Waiting 1 second";
@@ -187,12 +191,33 @@ public class Meet_3_FourWheels_Depot extends OpMode {
         robot.goldLocator.tune();
         robot.goldLocator.initHardware(hardwareMap);
         goldLocatorStatus = INITIALIZED;
+
+        //teamidentifier depositor code
+        robot.threadTeamIdentifierDepositor = new REVTrixbot.REVTrixbotMTTeamIdentifierDepositor(){
+            @Override
+            public void run() {
+                super.run();
+                teamIdentifierDepositorStatus = "Waiting for robot to reach depot and orient for deposit";
+                while (!isInDepot);
+                depositTeamIdentifier();
+                teamIdentifierDepositorStatus = "Depositing Team Identifier";
+                try { //sleep to give time to show message
+                    sleep(750);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                teamIdentifierDepositorStatus = EXECUTION_COMPLETE_STRING;
+            }
+        };
+        robot.threadTeamIdentifierDepositor.initHardware(hardwareMap);
+        teamIdentifierDepositorStatus = INITIALIZED;
     }
 
     @Override
     public void internalPostInitLoop() {
         super.internalPostInitLoop();
         telemetry.addData("Drivetrain Status", driveTrainStatus);
+        telemetry.addData("Team Identifier Depositor Status", teamIdentifierDepositorStatus);
         telemetry.addData("Mineral Lifter Status", mineralLifterStatus);
         telemetry.addData("Gold Locator Status", goldLocatorStatus);
         telemetry.addData("   Is Found", visible);
@@ -223,6 +248,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
     public void internalPostLoop() { //for updating telemetry per FTC Javadocs.
         super.internalPostLoop();
         telemetry.addData("Drivetrain Status", driveTrainStatus);
+        telemetry.addData("Team Identifier Depositor Status", teamIdentifierDepositorStatus);
         telemetry.addData("Mineral Lifter Status", mineralLifterStatus);
         telemetry.addData("Gold Locator Status", goldLocatorStatus);
         telemetry.addData("   Is Found", visible);

@@ -254,6 +254,10 @@ public class LimitedDcMotorDrivenActuator extends Thread implements FTCModulariz
         }
     }
 
+    public void moveToRotationCount(double speed, int rotationCount){
+        moveRotations(speed, rotationCount - getCurrentPosition());//if pos is 5000, 5000-3000 = need to move -2000 to get to position
+    }
+
     public void moveToMaxPos(double speed){
         moveRotations(Math.abs(speed), MAXIMUM_ROTAIONS-getCurrentPosition()); //get rotations left to move to maz
     }
@@ -318,6 +322,38 @@ public class LimitedDcMotorDrivenActuator extends Thread implements FTCModulariz
         //stop motor.
         motor.setPower(0);
         */
+    }
+
+    public void teleOpMoveJoystick(double joyStickDouble){ //TODO test this
+        double speed = 0.0;
+        if (joyStickDouble != 0.0) { //TODO maybe put a tolerance
+            if (HAS_MAXIMUM_LIMIT_SWITCH){
+                if(!maximumLimitSwitch.getState() && joyStickDouble > 0.0){
+                    speed = joyStickDouble;
+                }
+                else speed = 0;
+            }
+
+            if(HAS_MINIMUM_LIMIT_SWITCH){
+                if(!minimumLimitSwitch.getState() && joyStickDouble < 0.0){
+                    speed = joyStickDouble;
+                }
+                else speed = 0;
+            }
+
+            if (HAS_ENCODER){
+                if((motor.getCurrentPosition() <= MAXIMUM_ROTAIONS) && joyStickDouble > 0.0){
+                    speed = joyStickDouble;
+                }
+                else if ((motor.getCurrentPosition() >= MINIMUM_ROTATIONS) && joyStickDouble < 0.0){
+                    speed = joyStickDouble;
+                }
+                else speed = 0;
+            }
+        }
+        else speed = 0;
+
+        motor.setPower(speed);
     }
 
     public void teleOpMoveToMinPos(boolean moveToMinPosButton, double speed){
