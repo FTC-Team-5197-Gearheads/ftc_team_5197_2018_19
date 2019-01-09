@@ -84,9 +84,9 @@ public class Meet_3_FourWheels_Depot extends OpMode {
 
             private void manuallyGoToAndSetZeroPositionAfterLanding(double speed){ //need to do this manually as they are not yet limit switches
                 //manually move to zero position(need to put movement code)
-                motor.setTargetPosition(0); //TODO set target position
+                motor.setTargetPosition(30); //TODO set target position
                 motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motor.setPower(Math.abs(speed));
+                motor.setPower(-Math.abs(speed));
                 while(motor.isBusy()); //wait for motor to reach position
                 motor.setPower(0);
                 //at end
@@ -96,9 +96,9 @@ public class Meet_3_FourWheels_Depot extends OpMode {
 
             private void unhookLiftingSupportPiece(double speed){ //need to do this manually as they are not yet limit switches
                 //manually move to zero position(need to put movement code)
-                motor.setTargetPosition(-30); //TODO set target position
+                motor.setTargetPosition(-30);
                 motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motor.setPower(Math.abs(speed));
+                motor.setPower(-Math.abs(speed));
                 while(motor.isBusy()); //wait for motor to reach position
                 motor.setPower(0);
                 //at end
@@ -117,15 +117,16 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                moveRotations(1, 2000);//TO simulate falling/remove this when actually on lander.
+               //             moveRotations(1, 2500);//TO simulate falling/remove this when actually on lander.
                 isLanded = true;
                 while(!isUnhooked); //wait for robot to unhookLiftingSupportPiece itself
                 mineralLifterStatus = "Retracting Arm";
-                manuallyGoToAndSetZeroPositionAfterLanding(0.1);//moveToMinPos(0.1);
+                //manuallyGoToAndSetZeroPositionAfterLanding(0.1);//moveToMinPos(0.1);
                 /*
                 mineralLifterStatus = "Moving to highest position";
                 moveToHighestPosition(0.1);
                  */
+                //           manuallyGoToAndSetZeroPositionAfterLanding(0.1);
                 mineralLifterStatus = "Waiting 1 second";
                 try { //TEMPORARY to simulate the time it takes for above statement
                     sleep(1000); //allow time for robot to fall

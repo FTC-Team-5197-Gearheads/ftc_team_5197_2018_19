@@ -44,7 +44,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
         driveTrainStatus = INITIALIZED;
 
         robot.threadMineralLifter = new REVTrixbot.REVTrixbotMTMineralLifter(){
-            private static final int LIFTER_PARALL_TO_ROBOT_POSITION = 100;
+            private static final int LIFTER_PARALLEL_TO_ROBOT_POSITION = 100;
             @Override
             public void teleOpFullyStowMTMineralLifter(double laArmSpeed, double laArmLifterSpeed, boolean button) { //macro
                 if(button)
@@ -66,8 +66,6 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
             public void getInMineralCargoBayDropPosition(boolean button){ //macro
                 final int LA_ARM_LIFTER_MINERAL_DROP_POS = 3100; //TODO figure out this value
                 final int LA_ARM_DROP_POS = 10;
-
-
 
                 if(gripper.getPosition() == GRIPPER_CLOSED && button) //only do once gripper closed with mineral. May need to add tolerance
                 {
@@ -107,7 +105,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
 
                     //TODO tell the wrist to move parallel to linear actuator arm
                     threadedLinearActuatorArm.moveToMinPos(0.3);
-                    threadedArmLifter.moveToRotationCount(0.3, LIFTER_PARALL_TO_ROBOT_POSITION);
+                    threadedArmLifter.moveToRotationCount(0.3, LIFTER_PARALLEL_TO_ROBOT_POSITION);
                     //TODO tell the wrist to move down facing crater
                     gripper.setPosition(GRIPPER_OPEN);
 
