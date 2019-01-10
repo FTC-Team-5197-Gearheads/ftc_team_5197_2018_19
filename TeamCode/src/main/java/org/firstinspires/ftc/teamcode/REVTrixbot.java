@@ -87,11 +87,11 @@ public class REVTrixbot extends GenericFTCRobot
     private static final int REVTRIXBOT_LA_RETRACTED_ROTATIONS = 0;
     private static final int REVTRIXBOT_LA_EXTENDED_ROTATIONS = 10; //TODO figure this out
 
-    private static final String REVTRIXBOT_GRIPPER_SERVO_NAME = "EH2servo0";
+    private static final String REVTRIXBOT_GRIPPER_SERVO_NAME = "EH2servo3";
     private static final double REVTRIXBOT_GRIPPER_CLOSED = 0;
     private static final double REVTRIXBOT_GRIPPER_OPEN = 0.9;
 
-    private static final String REVTRIXBOT_GRIPPER_WRIST_NAME = "EH2servo1";
+    private static final String REVTRIXBOT_GRIPPER_WRIST_NAME = "EH2servo2";
 
     private static final String REVTRIXBOT_TEAM_IDENTIFIER_DEPOSITOR_SERVO_NAME = "EH2servo5";
     private static final double REVTRIXBOT_TEAM_IDENTIFIER_DEPOSITOR_INIT_POS = 0.62; //TODO adjust see if direction is reversible
@@ -216,11 +216,10 @@ public class REVTrixbot extends GenericFTCRobot
         }
 
         public static class ThreadedLinearActuatorArm extends LimitedDcMotorDrivenActuator{
-            private static final String LA_MOTOR_NAME = "EH2motor1";
             private static final int LA_RETRACTED_ROTATIONS = 0;
             private static final int LA_EXTENDED_ROTATIONS = 50;
             public ThreadedLinearActuatorArm(){
-                super(LA_MOTOR_NAME, LA_RETRACTED_ROTATIONS, LA_EXTENDED_ROTATIONS, DcMotorSimple.Direction.FORWARD, false,
+                super(REVTRIXBOT_LA_MOTOR_NAME, LA_RETRACTED_ROTATIONS, LA_EXTENDED_ROTATIONS, DcMotorSimple.Direction.FORWARD, false,
                         false, true, null, null,
                         null,
                         true, false, true,0.0);

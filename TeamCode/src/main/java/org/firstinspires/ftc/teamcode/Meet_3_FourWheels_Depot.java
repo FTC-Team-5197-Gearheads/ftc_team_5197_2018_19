@@ -96,7 +96,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
 
             private void unhookLiftingSupportPiece(double speed){ //need to do this manually as they are not yet limit switches
                 //manually move to zero position(need to put movement code)
-                motor.setTargetPosition(-30);
+                motor.setTargetPosition(-500);
                 motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 motor.setPower(-Math.abs(speed));
                 while(motor.isBusy()); //wait for motor to reach position
@@ -111,12 +111,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                 super.run();
                 mineralLifterStatus = "Landing";
                 unhookLiftingSupportPiece(1); //TODO decide if breaking is necesarry
-                mineralLifterStatus = "Waiting 1 second";
-                try {
-                    sleep(1000); //allow time for robot to fall
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                moveToRotationCount(1, 3500);
                //             moveRotations(1, 2500);//TO simulate falling/remove this when actually on lander.
                 isLanded = true;
                 while(!isUnhooked); //wait for robot to unhookLiftingSupportPiece itself
@@ -213,7 +208,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
             public void run() {
                 super.run();
                 teamIdentifierDepositorStatus = "Waiting for robot to reach depot and orient for deposit";
-                while (!isInDepot);
+               // while (!isInDepot);
                 depositTeamIdentifier();
                 teamIdentifierDepositorStatus = "Depositing Team Identifier";
                 try { //sleep to give time to show message
@@ -243,11 +238,12 @@ public class Meet_3_FourWheels_Depot extends OpMode {
     @Override
     public void start() {  //Start threads
         super.start();
-        robot.threadDT.start();
+        //robot.threadDT.start();
          //TODO see if telemetry.update necesarry or use a telemetry loop
 
         robot.goldLocator.enable();
         robot.goldLocationUpdater.start();
+        //robot.threadTeamIdentifierDepositor.start();
 
         robot.threadMineralLifter.threadedArmLifter.start();
 
@@ -274,10 +270,11 @@ public class Meet_3_FourWheels_Depot extends OpMode {
     @Override
     public void stop() { //Interrupt threads
         super.stop();
-        robot.threadDT.interrupt();
+        //robot.threadDT.interrupt();
         robot.threadMineralLifter.interrupt();
         robot.goldLocationUpdater.interrupt();
         robot.goldLocator.disable(); //
+        //robot.threadTeamIdentifierDepositor.interrupt();
     }
 
 }

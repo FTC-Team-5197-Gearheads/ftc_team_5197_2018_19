@@ -192,7 +192,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
     @Override
     public void start() {
         super.start();
-        robot.threadMineralLifter.start();
+       // robot.threadMineralLifter.start();
         robot.threadDT.start();
 
     }
@@ -227,7 +227,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
     @Override
     public void stop() {
         super.stop();
-        robot.threadMineralLifter.interrupt();
+       // robot.threadMineralLifter.interrupt();
         robot.threadDT.interrupt();
     }
 }

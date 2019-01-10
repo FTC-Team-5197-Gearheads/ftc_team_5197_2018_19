@@ -119,6 +119,8 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         int newLeftTarget = 0;
         int newRightTarget = 0;
 
+        setModeOfAllMotors(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //do to correct differences in rotations
+
         newLeftTarget = getCurrentAverageLeftDTPosition() + (int)
                 (leftInches * COUNTS_PER_INCH);
 
