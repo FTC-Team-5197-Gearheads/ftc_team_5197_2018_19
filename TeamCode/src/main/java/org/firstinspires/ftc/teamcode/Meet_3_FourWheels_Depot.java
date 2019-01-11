@@ -210,7 +210,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                     }   else {
                             pos = Pos.LEFT;
                     }
-                    if (counter > 200)
+                    if (counter > 600)
                         break;
                     robot.goldLocator.updateGoldPos(pos);
 
