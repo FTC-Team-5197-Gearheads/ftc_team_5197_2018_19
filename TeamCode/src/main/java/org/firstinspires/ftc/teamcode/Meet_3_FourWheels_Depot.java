@@ -37,6 +37,7 @@ public class Meet_3_FourWheels_Depot extends OpMode {
     volatile private Pos pos = Pos.UNKNOWN;
     volatile private double x = 0.0;
     volatile private double y = 0.0;
+    volatile private double counter = 0.0; //my code vision team please help us.
 
 
     @Override
@@ -48,28 +49,39 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                 super.run();
                 driveTrainStatus = "Waiting for Landing";
                 while(!isLanded);
-                driveTrainStatus = "Moving to Gold Mineral Inspection Location";
-                encoderDrive(1, 3, -3); //TODO work on zero radius turn method or improve turnAngleRadius drive method for pivoting on axis
+                driveTrainStatus = "Unhooking from lander";
+                encoderDrive(1, 5.5, -5.5); //TODO work on zero radius turn method or improve turnAngleRadius drive method for pivoting on axis
                 //or tunrAngleRadiusDrive(0.5, 20, 0 radius)
                 isUnhooked = true;
-                turnAngleRadiusDrive(0.5, -160, 10 ); //TODO. Figure our driving to gold position. Maybe need elipsoid method?
+                //turnAngleRadiusDrive(0.5, -160, 10 ); //TODO. Figure our driving to gold position. Maybe need elipsoid method?
+                driveTrainStatus = "Moving to gold location judgement position";
+                encoderDrive(1, 3, 3); //this also gives gold locator time to  decide
 
-                driveTrainStatus = "Moving to Depot and then Crater";
                 switch (robot.goldLocator.getGoldPos()){
                     case LEFT:
+                        driveTrainStatus = "Going to Left";
+
                        // encoderDrive(1, -6, 6);
                         //turnAngleRadiusDrive(0.5, -270, 10);
                         break;
 
                     case RIGHT:
+                        driveTrainStatus = "Going to right";
                         //turnAngleRadiusDrive(0.5, 180, 10);
                         break;
 
                     case MID:
+                        driveTrainStatus = "Going to middle";
                         break;
 
                     default:
+                        driveTrainStatus = "Unknown Trajectory. Staying put";
                         break;
+                }
+                try {
+                    sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 driveTrainStatus = EXECUTION_COMPLETE_STRING;
             }
@@ -111,11 +123,11 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                 super.run();
                 mineralLifterStatus = "Landing";
                 unhookLiftingSupportPiece(1); //TODO decide if breaking is necesarry
-                moveToRotationCount(1, 3500);
+                moveToRotationCount(0.5, 3500);
                //             moveRotations(1, 2500);//TO simulate falling/remove this when actually on lander.
                 isLanded = true;
                 while(!isUnhooked); //wait for robot to unhookLiftingSupportPiece itself
-                mineralLifterStatus = "Retracting Arm";
+                //mineralLifterStatus = "Retracting Arm";
                 //manuallyGoToAndSetZeroPositionAfterLanding(0.1);//moveToMinPos(0.1);
                 /*
                 mineralLifterStatus = "Moving to highest position";
@@ -157,6 +169,9 @@ public class Meet_3_FourWheels_Depot extends OpMode {
             private final static int LEFTPOINT = -106;
             private final static int RIGHTPOINT = 106;
 
+
+            private static final int KNOCKOFFABLE_GOLD_MINERAL_THRESHOLD = 200; //shoulbe be greate than or equal to this value
+
             @Override
             public void run() {
                 super.run();
@@ -165,6 +180,12 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                     visible = robot.goldLocator.isFound();
                     x = robot.goldLocator.getXPosition() - MIDPOINT;
                     y = robot.goldLocator.getYPosition();
+
+                    if(driveTrainStatus == "Moving to gold location judgement position")  //my code, vision, team we need to work on this. I have little expertise in this region. Made counter as visible tends to fluctuate, due to while loop.
+                    {
+                        if (visible && y > KNOCKOFFABLE_GOLD_MINERAL_THRESHOLD)
+                            counter++;
+                    }
 
                     if (robot.goldLocator.getArea() < 1200 )
                         visible = false;
@@ -175,10 +196,13 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                     if (robot.goldLocator.getScore() > 10)
                         visible = false;
 
-                    if (robot.goldLocator.getYPosition() < 120)
+                    if (robot.goldLocator.getYPosition() < 200) //was 120
                         visible = false;
 
-                    if(visible) {
+
+
+
+                    if(/*visible*/ counter > 0) {
                         if (x < 0)
                             pos = Pos.MID;
                         else if (x >= 0)
@@ -186,6 +210,8 @@ public class Meet_3_FourWheels_Depot extends OpMode {
                     }   else {
                             pos = Pos.LEFT;
                     }
+                    if (counter > 200)
+                        break;
                     robot.goldLocator.updateGoldPos(pos);
 
                     /*TODO moveRotations this to the specialized telementry reporting funciotn in OPMOde
@@ -232,13 +258,15 @@ public class Meet_3_FourWheels_Depot extends OpMode {
         telemetry.addData("Gold Locator Status", goldLocatorStatus);
         telemetry.addData("   Is Found", visible);
         telemetry.addData("   X Pos", x);
+        telemetry.addData("   Y Pos", y);
+        telemetry.addData("   Found Confidence Counter", counter);
         telemetry.addData("   Gold Pos", pos);
     }
 
     @Override
     public void start() {  //Start threads
         super.start();
-        //robot.threadDT.start();
+        robot.threadDT.start();
          //TODO see if telemetry.update necesarry or use a telemetry loop
 
         robot.goldLocator.enable();
@@ -264,16 +292,18 @@ public class Meet_3_FourWheels_Depot extends OpMode {
         telemetry.addData("Gold Locator Status", goldLocatorStatus);
         telemetry.addData("   Is Found", visible);
         telemetry.addData("   X Pos", x);
+        telemetry.addData("   Y Pos", y);
+        telemetry.addData("   Found Confidence Counter", counter);
         telemetry.addData("   Gold Pos", pos);
     }
 
     @Override
     public void stop() { //Interrupt threads
         super.stop();
-        //robot.threadDT.interrupt();
+        robot.threadDT.interrupt();
         robot.threadMineralLifter.interrupt();
-        robot.goldLocationUpdater.interrupt();
-        robot.goldLocator.disable(); //
+        robot.goldLocationUpdater.interrupt();//suspect the loop may also be stop issue. Maybe calle retun; in public void run() when isInterru[ted?
+        //robot.goldLocator.disable(); //keep this unexecuted as I fear it may be an issue per thier documentation
         //robot.threadTeamIdentifierDepositor.interrupt();
     }
 
