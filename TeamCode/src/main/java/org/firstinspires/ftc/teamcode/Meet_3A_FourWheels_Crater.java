@@ -1,32 +1,3 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.firstinspires.ftc.teamcode;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
@@ -36,11 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Meet 3A FourWheels Facing Depot", group="REVTrixbot")
-//@Disabled
-public class Meet_3A_FourWheels_Depot extends LinearOpMode {
-
-
+@Autonomous(name="Meet 3A FourWheels Facing Crater", group="REVTrixbot")
+public class Meet_3A_FourWheels_Crater extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private GoldMineralDetector_2 locator = null;
@@ -77,7 +45,7 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pos pos = Pos.MID;
+        Meet_3A_FourWheels_Depot.Pos pos = Meet_3A_FourWheels_Depot.Pos.MID;
         String text = "??";
 
         locator = new GoldMineralDetector_2();
@@ -199,8 +167,8 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !done) {
-        // lineup the camera on the right side
-        // right 2 balls are visible
+            // lineup the camera on the right side
+            // right 2 balls are visible
             //sssland(); //starts the robot in the middle, then turn to the right before sampling
 
             visible = locator.isFound();
@@ -215,6 +183,7 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
             if (locator.getRatio() > 2.5)
                 visible = false;
 
+
             if (locator.getScore() > 10)
                 visible = false;
 
@@ -225,11 +194,11 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
 
             if(visible) {
                 if (x < 0)
-                    pos = Pos.MID;
+                    pos = Meet_3A_FourWheels_Depot.Pos.MID;
                 else if (x >= 0)
-                    pos = Pos.RIGHT;
+                    pos = Meet_3A_FourWheels_Depot.Pos.RIGHT;
             }   else {
-                pos = Pos.LEFT;
+                pos = Meet_3A_FourWheels_Depot.Pos.LEFT;
             }
 
 
@@ -279,7 +248,7 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
 
 
     private void land(){
-       // robot.revTrixBotMineralArm.laArmLifter.setBraking(false);
+        // robot.revTrixBotMineralArm.laArmLifter.setBraking(false);
         robot.revTrixBotMineralArm.laArmLifter.moveToMaxPos(0.1);
         /*
         robot.dt.encoderDrive(1, 3.3, -3.3); //turn to gold
@@ -292,25 +261,7 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
     private void targetLeft()  {
         // build a profile to handle target on left
         robot.dt.encoderDrive(1, -12.5, 12.5);
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 38, 38);
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 18, -18);
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 28.3, 28.3);
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 20.8, -20.8);
-        //sleep(1000);
-        robot.idenfierFor5197Depositer.depositTeamIdentifier();
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 83, 83);
-        //sleep(3000);
-        //robot.dt.encoderDrive(1, 8, 8);
-        //sleep(1000);
-        //robot.dt.encoderDrive(1, 5, -5);
-        //sleep(1000);
-        //robot.dt.encoderDrive(1, 40, 40);
-        //sleep(2000);
+        robot.dt.encoderDrive(1, 37, 37);
         done = true;
 
 
@@ -319,19 +270,7 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
     private void targetRight() {
         // build a profile to handle target on right
         robot.dt.encoderDrive(1, 3, -3);
-        //sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(1, 37, 37);
-        //sleep(1500);
-        robot.dt.encoderDrive(1, 23, -23);
-        //sleep(1000);
-        robot.dt.encoderDrive(1, -20, -20);
-        //sleep(1000);
-        robot.idenfierFor5197Depositer.depositTeamIdentifier();
-        //sleep(1000);
-        robot.dt.encoderDrive(1, -1, 1);
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 75, 75);
-        //sleep(2000);
+        robot.dt.encoderDrive(1, 33, 33);
         done = true;  // end the run
     }
 
@@ -339,26 +278,7 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
 
         // build a profile to handle target on right
         robot.dt.encoderDrive(1, -5, 5); //turn to gold
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 30,30); //straight
-        //sleep(1000);
-        robot.dt.encoderDrive(1, -10, 10); //small left turn
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 12.7, 12.7); //go straight again was 14
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 20, -20); //turn to corner
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 14.9, 14.9); //forward to corner
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 18.85, -18.85);
-        //sleep(1000);
-        robot.dt.encoderDrive(1, 4, 4);
-        //sleep(1000);
-        robot.idenfierFor5197Depositer.depositTeamIdentifier();
-        //sleep(1000);
-
-        robot.dt.encoderDrive(1, 78, 78);
-        //sleep(3000);
+        robot.dt.encoderDrive(1, 31,31); //straight
         done = true;
     }
 

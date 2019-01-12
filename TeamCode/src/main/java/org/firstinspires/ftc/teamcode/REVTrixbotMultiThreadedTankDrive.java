@@ -128,10 +128,11 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                 super.run();
                 mineralArmStatus = RUNNING;
                 while(!isInterrupted()){
-                    teleOpFullyStowMTMineralLifter(0.3, 0.3, gamepad2.y);
-                    getInMineralCargoBayDropPosition(gamepad2.dpad_up);
-                    getInMineralCraterCollectPosition(gamepad2.dpad_down);
+                    //teleOpFullyStowMTMineralLifter(0.3, 0.3, gamepad2.y);
+                    //getInMineralCargoBayDropPosition(gamepad2.dpad_up);
+                   // getInMineralCraterCollectPosition(gamepad2.dpad_down);
                 }
+
             }
         };
 
@@ -145,10 +146,12 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
             @Override
             public void run() {
                 super.run();
-                mineralLifterArmExtenderStatus = RUNNING;
+                //mineralLifterArmExtenderStatus = RUNNING;
+                /*
                 while (!isInterrupted()){
-                    teleOpMoveJoystick(gamepad2.right_stick_y);
+                    //teleOpMoveJoystick(gamepad2.right_stick_y);
                 }
+                */
             }
         };
 
@@ -176,8 +179,8 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                 super.run();
                 mineralLifterArmRaiserStatus = RUNNING;
                 while (!isInterrupted()){
-                    teleOpMoveToHighestPosition(0.3, gamepad2.x);
-                    teleOpMoveJoystick(gamepad2.left_stick_y);
+                    //teleOpMoveToHighestPosition(0.3, gamepad1.y);
+                    teleOpMove(gamepad1.dpad_up, gamepad1.dpad_down, 1.0);
                 }
             }
         };
@@ -194,7 +197,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
     @Override
     public void start() {
         super.start();
-       // robot.threadMineralLifter.start();
+        robot.threadMineralLifter.start();
         robot.threadDT.start();
 
     }
@@ -229,7 +232,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
     @Override
     public void stop() {
         super.stop();
-       // robot.threadMineralLifter.interrupt();
+        robot.threadMineralLifter.interrupt();
         robot.threadDT.interrupt();
     }
 }

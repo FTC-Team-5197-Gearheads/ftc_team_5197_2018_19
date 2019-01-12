@@ -81,7 +81,7 @@ public class REVTrixbot extends GenericFTCRobot
 
     private static final String REVTRIXBOT_LA_ARM_LIFTER_MOTOR_NAME = "EH2motor0";
     private static final int REVTRIXBOT_LA_ARM_LIFTER_STOWED_ROTATIONS = 0;
-    private static final int REVTRIXBOT_LA_ARM_LIFTER_ERECT_ROTATIONS = 5500;
+    private static final int REVTRIXBOT_LA_ARM_LIFTER_ERECT_ROTATIONS = 3500; //TODO increase for interleage
 
     private static final String REVTRIXBOT_LA_MOTOR_NAME = "EH2motor1";
     private static final int REVTRIXBOT_LA_RETRACTED_ROTATIONS = 0;
