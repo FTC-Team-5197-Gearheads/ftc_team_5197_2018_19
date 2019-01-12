@@ -94,7 +94,7 @@ public class REVTrixbot extends GenericFTCRobot
     private static final String REVTRIXBOT_GRIPPER_WRIST_NAME = "EH2servo2";
 
     private static final String REVTRIXBOT_TEAM_IDENTIFIER_DEPOSITOR_SERVO_NAME = "EH2servo5";
-    private static final double REVTRIXBOT_TEAM_IDENTIFIER_DEPOSITOR_INIT_POS = 0.62; //TODO adjust see if direction is reversible
+    private static final double REVTRIXBOT_TEAM_IDENTIFIER_DEPOSITOR_INIT_POS = 0.7; //TODO adjust see if direction is reversible
     private static final double REVTRIXBOT_TEAM_IDENTIFIER_DEPOSITOR_DEPOSIT_POS = 0.2; //TODO adjust
 
     REVTrixbot(){

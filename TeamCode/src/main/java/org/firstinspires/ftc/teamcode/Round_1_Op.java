@@ -51,7 +51,7 @@ import static org.firstinspires.ftc.teamcode.Round_1_Op.Pos.UNKNOWN;
 
 
 @TeleOp(name="Round 1 Operation", group="Linear Opmode")
-@Disabled
+//@Disabled
 public class Round_1_Op extends LinearOpMode {
 
 
@@ -114,6 +114,8 @@ public class Round_1_Op extends LinearOpMode {
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
 
+            /*
+
             if (locator.getArea() < 1200 )
                 visible = false;
 
@@ -123,8 +125,12 @@ public class Round_1_Op extends LinearOpMode {
             if (locator.getScore() > 10)
                 visible = false;
 
-            if (locator.getYPosition() < 120)
+
+            if (locator.getYPosition() < 250)
                 visible = false;
+
+             */
+
 
             if(visible) {
                 if (x < 0)

@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -44,7 +45,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 
 @Autonomous(name="Red Look and Whack", group="Trainerbot")
-//@Disabled
+@Disabled
 public class RedLookWhack extends LinearOpMode {
 
     Trainerbot robot   = new Trainerbot();

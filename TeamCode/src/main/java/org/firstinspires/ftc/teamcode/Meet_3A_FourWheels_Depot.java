@@ -114,7 +114,7 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
         robot.threadMineralLifter.threadedArmLifter = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedArmLifter(){
             private void manuallyGoToAndSetZeroPositionAfterLanding(double speed){ //need to do this manually as they are not yet limit switches
                 //manually move to zero position(need to put movement code)
-                motor.setTargetPosition(30); //TODO set target position
+                motor.setTargetPosition(300); //TODO set target position
                 motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 motor.setPower(-Math.abs(speed));
                 while(motor.isBusy()); //wait for motor to reach position
@@ -140,13 +140,18 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
             public void run() {
                 super.run();
                 mineralLifterStatus = "Landing";
+                try {
+                    sleep(1500); //let the other bots go first
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 unhookLiftingSupportPiece(1); //TODO decide if breaking is necesarry
                 moveToRotationCount(0.5, 3500);
                 //             moveRotations(1, 2500);//TO simulate falling/remove this when actually on lander.
                 isLanded = true;
                 while(!isUnhooked); //wait for robot to unhookLiftingSupportPiece itself
-                //mineralLifterStatus = "Retracting Arm";
-                //manuallyGoToAndSetZeroPositionAfterLanding(0.1);//moveToMinPos(0.1);
+                mineralLifterStatus = "Retracting Arm";
+                manuallyGoToAndSetZeroPositionAfterLanding(0.7);//moveToMinPos(0.1);
                 /*
                 mineralLifterStatus = "Moving to highest position";
                 moveToHighestPosition(0.1);
@@ -179,7 +184,7 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
 
         robot.threadMineralLifter.start();
 
-        sleep(4000); //wait for landing
+        sleep(5500); //wait for landing
 
         robot.dt.encoderDrive(1, 5.05, -5.05); //TODO work on zero radius turn method or improve turnAngleRadius drive method for pivoting on axis
         //or tunrAngleRadiusDrive(0.5, 20, 0 radius)
@@ -189,7 +194,7 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
 
         robot.dt.encoderDrive(1, 6, 6);
         //sleep(1000);
-        sleep(3000);
+        sleep(1400);
 
 
         // run until the end of the match (driver presses STOP)
@@ -202,17 +207,24 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
 
+            /*
             if (locator.getArea() < 1200 )
                 visible = false;
 
+            /*
             if (locator.getRatio() > 2.5)
                 visible = false;
+             */
+
+            /*
 
             if (locator.getScore() > 10)
                 visible = false;
 
-            if (locator.getYPosition() < 120)
+            /*
+            if (locator.getYPosition() < 240)
                 visible = false;
+            */
 
             if(visible) {
                 if (x < 0)
@@ -283,19 +295,19 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
     private void targetLeft()  {
         // build a profile to handle target on left
         robot.dt.encoderDrive(1, -12.5, 12.5);
-        sleep(1000);
+        //sleep(1000);
         robot.dt.encoderDrive(1, 38, 38);
-        sleep(1000);
+        //sleep(1000);
         robot.dt.encoderDrive(1, 18, -18);
-        sleep(1000);
-        robot.dt.encoderDrive(1, 32, 32);
-        sleep(1000);
-        robot.dt.encoderDrive(1, 20, -20);
-        sleep(1000);
+        //sleep(1000);
+        robot.dt.encoderDrive(1, 28.3, 28.3);
+        //sleep(1000);
+        robot.dt.encoderDrive(1, 20.8, -20.8);
+        //sleep(1000);
         robot.idenfierFor5197Depositer.depositTeamIdentifier();
-        sleep(1000);
-        robot.dt.encoderDrive(1, 85, 85);
-        sleep(3000);
+        //sleep(1000);
+        robot.dt.encoderDrive(1, 83, 83);
+        //sleep(3000);
         //robot.dt.encoderDrive(1, 8, 8);
         //sleep(1000);
         //robot.dt.encoderDrive(1, 5, -5);
@@ -310,19 +322,19 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
     private void targetRight() {
         // build a profile to handle target on right
         robot.dt.encoderDrive(1, 3, -3);
-        sleep(1000);// wait for the previous motion to complete
+        //sleep(1000);// wait for the previous motion to complete
         robot.dt.encoderDrive(1, 37, 37);
-        sleep(1500);
+        //sleep(1500);
         robot.dt.encoderDrive(1, 23, -23);
-        sleep(1000);
+        //sleep(1000);
         robot.dt.encoderDrive(1, -20, -20);
-        sleep(1000);
+        //sleep(1000);
         robot.idenfierFor5197Depositer.depositTeamIdentifier();
-        sleep(1000);
+        //sleep(1000);
         robot.dt.encoderDrive(1, -1, 1);
-        sleep(1000);
+        //sleep(1000);
         robot.dt.encoderDrive(1, 75, 75);
-        sleep(2000);
+        //sleep(2000);
         done = true;  // end the run
     }
 
@@ -330,26 +342,26 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
 
         // build a profile to handle target on right
         robot.dt.encoderDrive(1, -5, 5); //turn to gold
-        sleep(1000);
+        //sleep(1000);
         robot.dt.encoderDrive(1, 30,30); //straight
-        sleep(1000);
+        //sleep(1000);
         robot.dt.encoderDrive(1, -10, 10); //small left turn
-        sleep(1000);
-        robot.dt.encoderDrive(1, 14, 14); //go straight again
-        sleep(1000);
+        //sleep(1000);
+        robot.dt.encoderDrive(1, 12.7, 12.7); //go straight again was 14
+        //sleep(1000);
         robot.dt.encoderDrive(1, 20, -20); //turn to corner
-        sleep(1000);
-        robot.dt.encoderDrive(1, 17, 17); //forward to corner
-        sleep(1000);
-        robot.dt.encoderDrive(1, 20, -20);
-        sleep(1000);
+        //sleep(1000);
+        robot.dt.encoderDrive(1, 14.9, 14.9); //forward to corner
+        //sleep(1000);
+        robot.dt.encoderDrive(1, 18.85, -18.85);
+        //sleep(1000);
         robot.dt.encoderDrive(1, 4, 4);
-        sleep(1000);
+        //sleep(1000);
         robot.idenfierFor5197Depositer.depositTeamIdentifier();
-        sleep(1000);
+        //sleep(1000);
 
         robot.dt.encoderDrive(1, 78, 78);
-        sleep(3000);
+        //sleep(3000);
         done = true;
     }
 

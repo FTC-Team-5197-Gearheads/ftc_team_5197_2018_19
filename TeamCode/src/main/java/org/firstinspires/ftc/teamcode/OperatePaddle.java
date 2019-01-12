@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -44,7 +45,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * This code was copied from sample ConceptScanServo, and heavily modified.
  */
 @TeleOp(name = "Operate Paddle", group = "Trainerbot")
-//@Disabled
+@Disabled
 public class OperatePaddle extends LinearOpMode {
 
     // Note: these constants different from those in RedLookWhack. Can they
