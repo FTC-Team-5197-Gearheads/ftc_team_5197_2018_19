@@ -14,10 +14,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.disnodeteam.dogecv.DogeCV;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name = "Meet 3 REVTrixbot Depot", group = "Meet 3")
+@Disabled //TODO uses this as a Start for Interleague tournament. Just need to get vision working
 public class Meet_3_FourWheels_Depot extends OpMode {
     REVTrixbot robot = new REVTrixbot();
 

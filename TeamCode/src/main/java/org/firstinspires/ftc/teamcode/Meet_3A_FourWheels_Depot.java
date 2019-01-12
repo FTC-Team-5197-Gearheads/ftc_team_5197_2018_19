@@ -55,6 +55,11 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
     private final static int LEFTPOINT = -106;
     private final static int RIGHTPOINT = 106;
 
+    private volatile String mineralLifterStatus = "";
+    private volatile boolean isLanded = false;
+    private volatile boolean isUnhooked = false;
+    private static final String EXECUTION_COMPLETE_STRING = "EXECUTION COMPLETE";
+
 
     static final double     COUNTS_PER_MOTOR_REV    = 4 ;
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;
@@ -100,8 +105,63 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
 
         // Init robot
 
+
         robot.dt.initHardware(hardwareMap);
         robot.idenfierFor5197Depositer.initHardware(hardwareMap);
+
+        robot.threadMineralLifter = new REVTrixbot.REVTrixbotMTMineralLifter();
+        robot.threadMineralLifter.threadedLinearActuatorArm = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedLinearActuatorArm();
+        robot.threadMineralLifter.threadedArmLifter = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedArmLifter(){
+            private void manuallyGoToAndSetZeroPositionAfterLanding(double speed){ //need to do this manually as they are not yet limit switches
+                //manually move to zero position(need to put movement code)
+                motor.setTargetPosition(30); //TODO set target position
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motor.setPower(-Math.abs(speed));
+                while(motor.isBusy()); //wait for motor to reach position
+                motor.setPower(0);
+                //at end
+                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
+            private void unhookLiftingSupportPiece(double speed){ //need to do this manually as they are not yet limit switches
+                //manually move to zero position(need to put movement code)
+                motor.setTargetPosition(-500);
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motor.setPower(-Math.abs(speed));
+                while(motor.isBusy()); //wait for motor to reach position
+                motor.setPower(0);
+                //at end
+                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
+            @Override
+            public void run() {
+                super.run();
+                mineralLifterStatus = "Landing";
+                unhookLiftingSupportPiece(1); //TODO decide if breaking is necesarry
+                moveToRotationCount(0.5, 3500);
+                //             moveRotations(1, 2500);//TO simulate falling/remove this when actually on lander.
+                isLanded = true;
+                while(!isUnhooked); //wait for robot to unhookLiftingSupportPiece itself
+                //mineralLifterStatus = "Retracting Arm";
+                //manuallyGoToAndSetZeroPositionAfterLanding(0.1);//moveToMinPos(0.1);
+                /*
+                mineralLifterStatus = "Moving to highest position";
+                moveToHighestPosition(0.1);
+                 */
+                //           manuallyGoToAndSetZeroPositionAfterLanding(0.1);
+                mineralLifterStatus = "Waiting 1 second";
+                try { //TEMPORARY to simulate the time it takes for above statement
+                    sleep(1000); //allow time for robot to fall
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mineralLifterStatus = EXECUTION_COMPLETE_STRING;
+            }
+        };
+        robot.threadMineralLifter.initHardware(hardwareMap);
         //robot.revTrixBotMineralArm.laArmLifter.teleOpMove(false, true, 0.008); //sleezy but will have to do
 
         //robot.roverRuckusRevTrixBotLift.initHardware(hardwareMap);
@@ -115,10 +175,22 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.dt.encoderDrive(1, 4, 4);
-        sleep(1000);
-        robot.dt.encoderDrive(1, 4, -4);
-        sleep(1000);
+
+
+        robot.threadMineralLifter.start();
+
+        sleep(4000); //wait for landing
+
+        robot.dt.encoderDrive(1, 5.05, -5.05); //TODO work on zero radius turn method or improve turnAngleRadius drive method for pivoting on axis
+        //or tunrAngleRadiusDrive(0.5, 20, 0 radius)
+        isUnhooked = true;
+
+
+
+        robot.dt.encoderDrive(1, 6, 6);
+        //sleep(1000);
+        sleep(3000);
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !done) {
@@ -193,6 +265,7 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
 
         telemetry.addData("Status" ,"All Done"); // Is the bot aligned with the gold mineral
         telemetry.update();// Gold X pos.
+        robot.threadMineralLifter.interrupt();
     }
 
 

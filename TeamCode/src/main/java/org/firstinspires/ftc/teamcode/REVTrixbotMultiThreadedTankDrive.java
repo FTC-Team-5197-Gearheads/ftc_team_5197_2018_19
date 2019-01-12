@@ -8,10 +8,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "REVTrixbot Meet 3 TeleOp", group = "Meet 3")
+//@Disabled
 public class REVTrixbotMultiThreadedTankDrive extends OpMode {
 
     REVTrixbot robot = new REVTrixbot();

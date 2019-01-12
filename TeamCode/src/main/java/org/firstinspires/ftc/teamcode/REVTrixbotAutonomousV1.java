@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * The Rover Ruckus 2018-19 Autonomous Opmode
@@ -19,6 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  */
 
 @Autonomous(name ="REVTrixbot: v1.0(only mineral detect)", group ="REVTrixbot")
+@Disabled
 public class REVTrixbotAutonomousV1 extends ModularRobotIterativeOpMode {
     private REVTrixbot robot = new REVTrixbot();
 

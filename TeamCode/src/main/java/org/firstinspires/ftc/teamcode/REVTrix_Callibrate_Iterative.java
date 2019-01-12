@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 /**
@@ -13,6 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
  */
 
 @Autonomous(name="Calibrate", group="REVTrixbot")
+@Disabled
 public class REVTrix_Callibrate_Iterative extends OpMode {
 
     REVTrixbot robot = new REVTrixbot();

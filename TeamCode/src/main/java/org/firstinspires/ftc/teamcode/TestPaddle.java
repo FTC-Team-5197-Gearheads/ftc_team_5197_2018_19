@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -43,7 +44,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * This code was copied from sample ConceptScanServo, and heavily simplified.
  */
 @Autonomous(name = "Test Paddle", group = "Trainerbot")
-//@Disabled
+@Disabled
 public class TestPaddle extends LinearOpMode {
 
     // Note: these constants different from those in RedLookWhack. Can they

@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevTouchSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -48,7 +49,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
  */
 @TeleOp(name = "Sensor: Digital touch using Threading", group = "Sensor")
-//@Disabled
+@Disabled
 
 public class REVSensorDigitalTouch extends OpMode{
     DigitalChannel digitalTouch;  // Hardware Device Object

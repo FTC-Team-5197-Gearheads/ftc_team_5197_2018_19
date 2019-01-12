@@ -39,6 +39,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
@@ -71,7 +72,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
  * Trainerbot.
  */
 @Autonomous(name = "Sensor: MR Color", group = "Trainerbot")
-//@Disabled
+@Disabled
 public class SensorMRColor extends LinearOpMode {
 
   @Override

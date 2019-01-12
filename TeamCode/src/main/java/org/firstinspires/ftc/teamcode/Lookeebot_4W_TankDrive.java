@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -46,7 +47,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @TeleOp(name="Lookeebot: 4 Wheels", group="Lookeebot")
-//@Disabled
+@Disabled
 public class Lookeebot_4W_TankDrive extends OpMode {
 
     /* Declare OpMode members. */
