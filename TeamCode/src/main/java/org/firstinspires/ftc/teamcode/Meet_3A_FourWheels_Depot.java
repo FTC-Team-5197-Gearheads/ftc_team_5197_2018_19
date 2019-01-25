@@ -167,7 +167,7 @@ public class Meet_3A_FourWheels_Depot extends LinearOpMode {
             }
         };
         robot.threadMineralLifter.initHardware(hardwareMap);
-        //robot.revTrixBotMineralArm.laArmLifter.teleOpMove(false, true, 0.008); //sleezy but will have to do
+        //robot.revTrixBotMineralArm.laArmLifter.teleOpMoveWithButtons(false, true, 0.008); //sleezy but will have to do
 
         //robot.roverRuckusRevTrixBotLift.initHardware(hardwareMap);
 

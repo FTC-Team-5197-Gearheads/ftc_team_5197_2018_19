@@ -103,7 +103,7 @@ public class Meet_2_FourWheels_Depot extends LinearOpMode {
 
         robot.dt.initHardware(hardwareMap);
         robot.idenfierFor5197Depositer.initHardware(hardwareMap);
-        //robot.revTrixBotMineralArm.laArmLifter.teleOpMove(false, true, 0.008); //sleezy but will have to do
+        //robot.revTrixBotMineralArm.laArmLifter.teleOpMoveWithButtons(false, true, 0.008); //sleezy but will have to do
 
         //robot.roverRuckusRevTrixBotLift.initHardware(hardwareMap);
 

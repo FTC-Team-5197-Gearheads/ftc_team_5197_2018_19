@@ -67,7 +67,7 @@ public class TestableLimitedMotionActuator extends LimitedDcMotorDrivenActuator 
     }
 
     @Override
-    public void teleOpMove(boolean moveToMaxPosButton, boolean moveToMinPosButton, double speed) {
+    public void teleOpMoveWithButtons(boolean moveToMaxPosButton, boolean moveToMinPosButton, double speed) {
         if (moveToMaxPosButton || moveToMinPosButton)
         {
             if((motor.getCurrentPosition() <= maxLimit) && moveToMaxPosButton){

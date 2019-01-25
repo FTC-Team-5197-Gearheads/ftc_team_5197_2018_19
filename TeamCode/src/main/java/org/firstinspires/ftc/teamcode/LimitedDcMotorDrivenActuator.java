@@ -266,7 +266,7 @@ public class LimitedDcMotorDrivenActuator extends Thread implements FTCModulariz
         moveRotations(Math.abs(speed), MINIMUM_ROTATIONS-getCurrentPosition());//e.g. 0-300 = -300. Move -300 rotoations to get to 0.
     }
 
-    public void teleOpMove(boolean moveToMaxPosButton, boolean moveToMinPosButton, double speed){
+    public void teleOpMoveWithButtons(boolean moveToMaxPosButton, boolean moveToMinPosButton, double speed){
         //always test limit switches first. Best limit test as sense physical limit.
         if (moveToMaxPosButton || moveToMinPosButton) {
             if (HAS_MAXIMUM_LIMIT_SWITCH){
@@ -324,8 +324,9 @@ public class LimitedDcMotorDrivenActuator extends Thread implements FTCModulariz
         */
     }
 
-    public void teleOpMoveJoystick(double joyStickDouble){ //TODO test this
+    public void teleOpMoveWithJoystick(double joyStickDouble){ //TODO test this
         double speed = 0.0;
+        joyStickDouble = -joyStickDouble;
         if (joyStickDouble != 0.0) { //TODO maybe put a tolerance
             if (HAS_MAXIMUM_LIMIT_SWITCH){
                 if(!maximumLimitSwitch.getState() && joyStickDouble > 0.0){

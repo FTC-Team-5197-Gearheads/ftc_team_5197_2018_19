@@ -85,7 +85,7 @@ public class REVTrixbot extends GenericFTCRobot
 
     private static final String REVTRIXBOT_LA_MOTOR_NAME = "EH2motor1";
     private static final int REVTRIXBOT_LA_RETRACTED_ROTATIONS = 0;
-    private static final int REVTRIXBOT_LA_EXTENDED_ROTATIONS = 10; //TODO figure this out
+    private static final int REVTRIXBOT_LA_EXTENDED_ROTATIONS = 1300;
 
     private static final String REVTRIXBOT_GRIPPER_SERVO_NAME = "EH2servo3";
     private static final double REVTRIXBOT_GRIPPER_CLOSED = 0;
@@ -216,10 +216,8 @@ public class REVTrixbot extends GenericFTCRobot
         }
 
         public static class ThreadedLinearActuatorArm extends LimitedDcMotorDrivenActuator{
-            private static final int LA_RETRACTED_ROTATIONS = 0;
-            private static final int LA_EXTENDED_ROTATIONS = 50;
             public ThreadedLinearActuatorArm(){
-                super(REVTRIXBOT_LA_MOTOR_NAME, LA_RETRACTED_ROTATIONS, LA_EXTENDED_ROTATIONS, DcMotorSimple.Direction.FORWARD, false,
+                super(REVTRIXBOT_LA_MOTOR_NAME, REVTRIXBOT_LA_RETRACTED_ROTATIONS, REVTRIXBOT_LA_EXTENDED_ROTATIONS, DcMotorSimple.Direction.FORWARD, false,
                         false, true, null, null,
                         null,
                         true, false, true,0.0);

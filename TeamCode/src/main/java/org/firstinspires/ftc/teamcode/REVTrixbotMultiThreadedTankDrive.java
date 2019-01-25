@@ -8,11 +8,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "REVTrixbot Meet 3 TeleOp", group = "Meet 3")
+@TeleOp(name = "REVTrixbot Los Angeles ILT TeleOp", group = "ILT")
 //@Disabled
 public class REVTrixbotMultiThreadedTankDrive extends OpMode {
 
@@ -138,20 +137,20 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
 
         robot.threadMineralLifter.threadedLinearActuatorArm = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedLinearActuatorArm(){
             @Override
-            public void teleOpMoveJoystick(double joyStickDouble) {
+            public void teleOpMoveWithJoystick(double joyStickDouble) {
                 if(mineralLifterArmExtenderStatus == RUNNING) //be sure no other method is using it
-                    super.teleOpMoveJoystick(joyStickDouble);
+                    super.teleOpMoveWithJoystick(joyStickDouble);
             }
 
             @Override
             public void run() {
                 super.run();
-                //mineralLifterArmExtenderStatus = RUNNING;
-                /*
+                mineralLifterArmExtenderStatus = RUNNING;
                 while (!isInterrupted()){
-                    //teleOpMoveJoystick(gamepad2.right_stick_y);
+                    teleOpMoveWithJoystick(gamepad2.right_stick_y);
+                    //teleOpMoveWithButtons(gamepad2.a, gamepad2.b, 1);
                 }
-                */
+
             }
         };
 
@@ -169,9 +168,9 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
             }
 
             @Override
-            public void teleOpMoveJoystick(double joyStickDouble) {
-                if(mineralLifterArmRaiserStatus == RUNNING)
-                    super.teleOpMoveJoystick(joyStickDouble);
+            public void teleOpMoveWithJoystick(double joyStickDouble) {
+                if(mineralLifterArmRaiserStatus == RUNNING) //do not move when other methods are using this actuator to avoid damage to the robot.
+                    super.teleOpMoveWithJoystick(joyStickDouble);
             }
 
             @Override
@@ -180,7 +179,8 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                 mineralLifterArmRaiserStatus = RUNNING;
                 while (!isInterrupted()){
                     //teleOpMoveToHighestPosition(0.3, gamepad1.y);
-                    teleOpMove(gamepad1.dpad_up, gamepad1.dpad_down, 1.0);
+                    //teleOpMoveWithButtons(gamepad2.dpad_up, gamepad2.dpad_down, 1.0);
+                    teleOpMoveWithJoystick(gamepad2.left_stick_y);
                 }
             }
         };

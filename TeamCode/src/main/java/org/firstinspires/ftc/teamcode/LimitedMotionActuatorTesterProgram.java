@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.Random;
 
 @TeleOp(name = "LM Actuator Tester Program",group = "Tester Programs")
-@Disabled
+//@Disabled
 public class LimitedMotionActuatorTesterProgram extends LinearOpMode {
     Random random =  new Random();
     F310JoystickInputNames.ABXYButtons[] randomButton =
@@ -144,7 +144,7 @@ public class LimitedMotionActuatorTesterProgram extends LinearOpMode {
             telemetry.update();
 
             testMotor.teleOpSetSpeed(gamepad1);
-            testMotor.teleOpMove(gamepad1.a, gamepad1.b, testMotor.speed);
+            testMotor.teleOpMoveWithButtons(gamepad1.a, gamepad1.b, testMotor.speed);
             testMotor.teleOpIncrementUpperLimit(gamepad1.dpad_up);
             testMotor.teleOpDecrementUpperLimit(gamepad1.dpad_down);
             testMotor.teleOpSwitchDirection(gamepad1.left_bumper && gamepad1.right_bumper);
