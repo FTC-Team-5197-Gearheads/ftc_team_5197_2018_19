@@ -88,10 +88,12 @@ public class REVTrixbot extends GenericFTCRobot
     private static final int REVTRIXBOT_LA_EXTENDED_ROTATIONS = 1300;
 
     private static final String REVTRIXBOT_GRIPPER_SERVO_NAME = "EH2servo3";
-    private static final double REVTRIXBOT_GRIPPER_CLOSED = 0;
+    private static final double REVTRIXBOT_GRIPPER_CLOSED = 0.1;
     private static final double REVTRIXBOT_GRIPPER_OPEN = 0.9;
 
     private static final String REVTRIXBOT_GRIPPER_WRIST_NAME = "EH2servo2";
+    private static final double REVTRIXBOT_GRIPPER_WRIST_MAX_UP_POS = 1.0;
+    private static final double REVTRIXBOT_GRIPPER_WRIST_MAX_DOWN_POS = 0.0;
 
     private static final String REVTRIXBOT_TEAM_IDENTIFIER_DEPOSITOR_SERVO_NAME = "EH2servo5";
     private static final double REVTRIXBOT_TEAM_IDENTIFIER_DEPOSITOR_INIT_POS = 0.7; //TODO adjust see if direction is reversible
@@ -176,6 +178,8 @@ public class REVTrixbot extends GenericFTCRobot
         public void initHardware(HardwareMap ahwMap) {
             threadedArmLifter.initHardware(ahwMap);
             threadedLinearActuatorArm.initHardware(ahwMap);
+            gripper = ahwMap.get(Servo.class, GRIPPER_SERVO_NAME);
+            gripper_wrist = ahwMap.get(Servo.class, GRIPPER_WRIST_NAME);
         }
 
         public void fullyStowMTMineralLifter(double laArmSpeed, double laArmLifterSpeed){ //macro only available in threaded version as while loops are not safe in linear code.
@@ -283,6 +287,23 @@ public class REVTrixbot extends GenericFTCRobot
                 closeGripper();
             if(openButton)
                 openGripper();
+        }
+
+        public void teleOpSingleButtonGrip(boolean gripButton){
+            if(gripButton)
+            {
+                if(gripper.getPosition() == GRIPPER_OPEN)
+                    gripper.setPosition(GRIPPER_CLOSED);
+                else
+                    gripper.setPosition(GRIPPER_OPEN);
+            }
+        }
+
+        public void teleOpRotateWrist(boolean moveUpButton, boolean moveDownButton){
+            if(moveUpButton && gripper_wrist.getPosition() < REVTRIXBOT_GRIPPER_WRIST_MAX_UP_POS)
+                gripper_wrist.setPosition(gripper_wrist.getPosition()+0.01);
+            else if(moveDownButton && gripper_wrist.getPosition() > REVTRIXBOT_GRIPPER_WRIST_MAX_DOWN_POS)
+                gripper_wrist.setPosition(gripper_wrist.getPosition()-0.01);
         }
 
 

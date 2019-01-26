@@ -125,11 +125,18 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
             @Override
             public void run() {
                 super.run();
+                //Declare all running systems
                 mineralArmStatus = RUNNING;
+                mineralLifterGripperStatus = RUNNING;
+                mineralLifterWristStatus = RUNNING;
                 while(!isInterrupted()){
                     //teleOpFullyStowMTMineralLifter(0.3, 0.3, gamepad2.y);
                     //getInMineralCargoBayDropPosition(gamepad2.dpad_up);
                    // getInMineralCraterCollectPosition(gamepad2.dpad_down);
+                    //teleOpSingleButtonGrip(gamepad2.a);
+                    teleOpRotateWrist(gamepad2.x, gamepad2.y);
+                    teleOpGrip(gamepad2.a, gamepad2.b);
+
                 }
 
             }
@@ -215,7 +222,8 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
 
     @Override
     public void loop() {
-
+       //robot.threadMineralLifter.teleOpSingleButtonGrip(gamepad2.a);
+       //robot.threadMineralLifter.teleOpRotateWrist(gamepad2.y, gamepad2.b);
     }
 
     @Override
