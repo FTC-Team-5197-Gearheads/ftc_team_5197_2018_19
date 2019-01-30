@@ -306,6 +306,20 @@ public class REVTrixbot extends GenericFTCRobot
                 gripper_wrist.setPosition(gripper_wrist.getPosition()-0.01);
         }
 
+        public void teleOpRotateWristWithGamepadTriggers(Gamepad weaponsOfficerGamepead){
+            if (weaponsOfficerGamepead.left_trigger != 0.0 || weaponsOfficerGamepead.right_trigger != 0.0) //don't write to servos to save resources when triggers not pressed
+                if(gripper_wrist.getPosition() < REVTRIXBOT_GRIPPER_WRIST_MAX_UP_POS)
+                   gripper_wrist.setPosition(gripper_wrist.getPosition()+weaponsOfficerGamepead.left_trigger);
+                else if (gripper_wrist.getPosition() > REVTRIXBOT_GRIPPER_WRIST_MAX_DOWN_POS)
+                    gripper_wrist.setPosition(gripper_wrist.getPosition()-weaponsOfficerGamepead.right_trigger);
+        }
+
+        public void keepServoLevelToGround(boolean overrideButton){ //TODO test this method
+            double levelServoPos = laArmLifter.getCurrentPosition()/laArmLifter.getMAXIMUM_ROTAIONS(); //will return a value from 0.0 to 1.0, thus already readt to write to servo.
+            if((laArmLifter.getCurrentPosition() >= laArmLifter.getMAXIMUM_ROTAIONS()/2 || laArmLifter.getCurrentPosition() <= laArmLifter.getMAXIMUM_ROTAIONS()/7)&& !overrideButton) //keep level when not in the range of dumping minerals
+                gripper_wrist.setPosition(levelServoPos);
+        }
+
 
         /*
         public void teleOpGripArmUpDown (boolean upButton, boolean downButton){
