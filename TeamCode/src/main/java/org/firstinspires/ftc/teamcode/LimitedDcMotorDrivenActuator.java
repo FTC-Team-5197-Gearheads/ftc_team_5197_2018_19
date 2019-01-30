@@ -395,5 +395,11 @@ public class LimitedDcMotorDrivenActuator extends Thread implements FTCModulariz
         return motor.isBusy();
     }
 
+    public Integer getMINIMUM_ROTATIONS() {
+        return MINIMUM_ROTATIONS;
+    }
 
+    public Integer getMAXIMUM_ROTAIONS() {
+        return MAXIMUM_ROTAIONS;
+    }
 }

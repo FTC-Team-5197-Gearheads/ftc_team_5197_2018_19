@@ -66,7 +66,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
 
             public void getInMineralCargoBayDropPosition(boolean button){ //macro
                 final int LA_ARM_LIFTER_MINERAL_DROP_POS = 3100; //TODO figure out this value
-                final int LA_ARM_DROP_POS = 10;
+                final int LA_ARM_DROP_POS = 10; //TODO and this value
 
                 if(gripper.getPosition() == GRIPPER_CLOSED && button) //only do once gripper closed with mineral. May need to add tolerance
                 {
@@ -136,6 +136,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                     //teleOpSingleButtonGrip(gamepad2.a);
                     teleOpRotateWrist(gamepad2.x, gamepad2.y);
                     teleOpGrip(gamepad2.a, gamepad2.b);
+                    keepServoLevelToGround(gamepad2.right_bumper); //TODO test and refine this method
 
                 }
 
@@ -223,7 +224,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
     @Override
     public void loop() {
        //robot.threadMineralLifter.teleOpSingleButtonGrip(gamepad2.a);
-       //robot.threadMineralLifter.teleOpRotateWrist(gamepad2.y, gamepad2.b);
+       //robot.threadMineralLifter.teleOpRotateWristWithGamepadTriggers(gamepad2.y, gamepad2.b);
     }
 
     @Override
