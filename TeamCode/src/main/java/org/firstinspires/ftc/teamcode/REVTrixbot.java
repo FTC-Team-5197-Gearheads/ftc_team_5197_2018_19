@@ -92,8 +92,8 @@ public class REVTrixbot extends GenericFTCRobot
     private static final double REVTRIXBOT_GRIPPER_OPEN = 0.9;
 
     private static final String REVTRIXBOT_GRIPPER_WRIST_NAME = "EH2servo2";
-    private static final double REVTRIXBOT_GRIPPER_WRIST_MAX_UP_POS = 1.0;
-    private static final double REVTRIXBOT_GRIPPER_WRIST_MAX_DOWN_POS = 0.0;
+    private static final double REVTRIXBOT_GRIPPER_WRIST_MAX_UP_POS = 0.0;
+    private static final double REVTRIXBOT_GRIPPER_WRIST_MAX_DOWN_POS = 1.0;
 
     private static final String REVTRIXBOT_TEAM_IDENTIFIER_DEPOSITOR_SERVO_NAME = "EH2servo5";
     private static final double REVTRIXBOT_TEAM_IDENTIFIER_DEPOSITOR_INIT_POS = 0.7; //TODO adjust see if direction is reversible
@@ -180,6 +180,7 @@ public class REVTrixbot extends GenericFTCRobot
             threadedLinearActuatorArm.initHardware(ahwMap);
             gripper = ahwMap.get(Servo.class, GRIPPER_SERVO_NAME);
             gripper_wrist = ahwMap.get(Servo.class, GRIPPER_WRIST_NAME);
+            gripper_wrist.setPosition(REVTRIXBOT_GRIPPER_WRIST_MAX_DOWN_POS);
         }
 
         public void fullyStowMTMineralLifter(double laArmSpeed, double laArmLifterSpeed){ //macro only available in threaded version as while loops are not safe in linear code.
@@ -192,6 +193,26 @@ public class REVTrixbot extends GenericFTCRobot
         public void teleOpFullyStowMTMineralLifter(double laArmSpeed, double laArmLifterSpeed, boolean button){
             if(button)
                 fullyStowMTMineralLifter(laArmSpeed, laArmLifterSpeed);
+        }
+
+        public void keepServoLevelToGround(boolean overrideButton){ //TODO test this method
+
+            double levelServoPos = 1.0;
+            double fractionOfMaxArmLifterRotations = ((double)threadedArmLifter.getMAXIMUM_ROTAIONS())/2.0; //adjust the divisor for adjusting range of collector being level to ground
+            double threadedArmLifterPosRatio = (((double) threadedArmLifter.getCurrentPosition())-fractionOfMaxArmLifterRotations)/ fractionOfMaxArmLifterRotations;
+            if((double)threadedArmLifter.getCurrentPosition() > fractionOfMaxArmLifterRotations)
+                levelServoPos = 1.4 - threadedArmLifterPosRatio;
+
+            /*
+            if(!overrideButton)
+            {
+                if((laArmLifter.getCurrentPosition() >= laArmLifter.getMAXIMUM_ROTAIONS()/2 ||
+                        laArmLifter.getCurrentPosition() <= laArmLifter.getMAXIMUM_ROTAIONS()/7)) //keep level when not in the range of dumping minerals
+                    gripper_wrist.setPosition(levelServoPos);
+            }
+            */
+            if (!overrideButton)
+                gripper_wrist.setPosition(levelServoPos);//TODO delete this line after testing
         }
 
 
@@ -217,6 +238,8 @@ public class REVTrixbot extends GenericFTCRobot
                 if(button) //TODO make sure newest called methods is acted on actuator and no crazy stuff happens when new called method interrupts current one
                     moveToHighestPosition(speed);
             }
+
+
         }
 
         public static class ThreadedLinearActuatorArm extends LimitedDcMotorDrivenActuator{
@@ -306,7 +329,7 @@ public class REVTrixbot extends GenericFTCRobot
                 gripper_wrist.setPosition(gripper_wrist.getPosition()-0.01);
         }
 
-        public void teleOpRotateWristWithGamepadTriggers(Gamepad weaponsOfficerGamepead){
+        public void teleOpRotateWristWithGamepadTriggers(Gamepad weaponsOfficerGamepead){ //needs to be properly tested. Not too responsive enough right now
             if (weaponsOfficerGamepead.left_trigger != 0.0 || weaponsOfficerGamepead.right_trigger != 0.0) //don't write to servos to save resources when triggers not pressed
                 if(gripper_wrist.getPosition() < REVTRIXBOT_GRIPPER_WRIST_MAX_UP_POS)
                    gripper_wrist.setPosition(gripper_wrist.getPosition()+weaponsOfficerGamepead.left_trigger);
@@ -314,11 +337,7 @@ public class REVTrixbot extends GenericFTCRobot
                     gripper_wrist.setPosition(gripper_wrist.getPosition()-weaponsOfficerGamepead.right_trigger);
         }
 
-        public void keepServoLevelToGround(boolean overrideButton){ //TODO test this method
-            double levelServoPos = laArmLifter.getCurrentPosition()/laArmLifter.getMAXIMUM_ROTAIONS(); //will return a value from 0.0 to 1.0, thus already readt to write to servo.
-            if((laArmLifter.getCurrentPosition() >= laArmLifter.getMAXIMUM_ROTAIONS()/2 || laArmLifter.getCurrentPosition() <= laArmLifter.getMAXIMUM_ROTAIONS()/7)&& !overrideButton) //keep level when not in the range of dumping minerals
-                gripper_wrist.setPosition(levelServoPos);
-        }
+
 
 
         /*

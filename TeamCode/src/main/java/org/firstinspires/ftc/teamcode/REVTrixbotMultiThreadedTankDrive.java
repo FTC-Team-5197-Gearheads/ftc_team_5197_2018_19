@@ -11,7 +11,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "REVTrixbot Los Angeles ILT TeleOp", group = "ILT")
+@TeleOp(name = "REVTrixbot Monrovia ILT TeleOp", group = "ILT")
 //@Disabled
 public class REVTrixbotMultiThreadedTankDrive extends OpMode {
 
@@ -136,9 +136,9 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                     //teleOpSingleButtonGrip(gamepad2.a);
 
                     //teleOpRotateWrist(gamepad2.x, gamepad2.y);
-                    teleOpRotateWristWithGamepadTriggers(gamepad2); //TODO also test this
+                    //teleOpRotateWristWithGamepadTriggers(gamepad2); //Doesn't work too well
                     teleOpGrip(gamepad2.a, gamepad2.b);
-                    keepServoLevelToGround(gamepad2.right_bumper); //TODO test and refine this method
+                    keepServoLevelToGround(gamepad2.x); //TODO test and refine this method
 
                 }
 
