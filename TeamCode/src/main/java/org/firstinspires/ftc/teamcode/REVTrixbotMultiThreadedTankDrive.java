@@ -37,7 +37,8 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                 super.run();
                 driveTrainStatus = RUNNING;
                 while(!isInterrupted()){
-                    teleOpTankDrive(gamepad1);
+                    //teleOpTankDrive(gamepad1);
+                    teleOpArcadeDrive(gamepad1, F310JoystickInputNames.Joysticks.LEFT_STICK);
                 }
             }
         };
@@ -157,7 +158,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                 super.run();
                 mineralLifterArmExtenderStatus = RUNNING;
                 while (!isInterrupted()){
-                    teleOpMoveWithJoystick(gamepad2.right_stick_y);
+                    teleOpMoveWithJoystick(gamepad2.left_stick_y); //for Clinston Zeng's preference
                     //teleOpMoveWithButtons(gamepad2.a, gamepad2.b, 1);
                 }
 
@@ -190,7 +191,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                 while (!isInterrupted()){
                     //teleOpMoveToHighestPosition(0.3, gamepad1.y);
                     //teleOpMoveWithButtons(gamepad2.dpad_up, gamepad2.dpad_down, 1.0);
-                    teleOpMoveWithJoystick(gamepad2.left_stick_y);
+                    teleOpMoveWithJoystick(gamepad1.right_stick_y);
                 }
             }
         };
