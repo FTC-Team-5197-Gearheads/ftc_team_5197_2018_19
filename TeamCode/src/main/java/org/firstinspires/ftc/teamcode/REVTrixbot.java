@@ -82,6 +82,7 @@ public class REVTrixbot extends GenericFTCRobot
     private static final String REVTRIXBOT_LA_ARM_LIFTER_MOTOR_NAME = "EH2motor0";
     private static final int REVTRIXBOT_LA_ARM_LIFTER_STOWED_ROTATIONS = 0;
     private static final int REVTRIXBOT_LA_ARM_LIFTER_ERECT_ROTATIONS = 6225; //TODO increase for interleage
+    private static final double FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS = ((double)REVTRIXBOT_LA_ARM_LIFTER_ERECT_ROTATIONS)/2.0; //adjust the divisor for adjusting range of collector being level to ground
 
     private static final String REVTRIXBOT_LA_MOTOR_NAME = "EH2motor1";
     private static final int REVTRIXBOT_LA_RETRACTED_ROTATIONS = 0;
@@ -197,11 +198,10 @@ public class REVTrixbot extends GenericFTCRobot
 
         public void keepServoLevelToGround(boolean overrideButton){ //TODO test this method
 
-            double levelServoPos = 1.0;
-            double fractionOfMaxArmLifterRotations = ((double)threadedArmLifter.getMAXIMUM_ROTAIONS())/2.0; //adjust the divisor for adjusting range of collector being level to ground
-            double threadedArmLifterPosRatio = (((double) threadedArmLifter.getCurrentPosition())-fractionOfMaxArmLifterRotations)/ fractionOfMaxArmLifterRotations;
-            if((double)threadedArmLifter.getCurrentPosition() > fractionOfMaxArmLifterRotations)
-                levelServoPos = 1.4 - threadedArmLifterPosRatio;
+            double threadedArmLifterPosRatio = (((double) threadedArmLifter.getCurrentPosition())- FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS)/ FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS;
+            if((double)threadedArmLifter.getCurrentPosition() > FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS && !overrideButton)
+                gripper_wrist.setPosition(1.30 - threadedArmLifterPosRatio);
+
 
             /*
             if(!overrideButton)
@@ -211,9 +211,10 @@ public class REVTrixbot extends GenericFTCRobot
                     gripper_wrist.setPosition(levelServoPos);
             }
             */
-            if (!overrideButton)
-                gripper_wrist.setPosition(levelServoPos);//TODO delete this line after testing
         }
+
+
+
 
 
 
@@ -323,9 +324,9 @@ public class REVTrixbot extends GenericFTCRobot
         }
 
         public void teleOpRotateWrist(boolean moveUpButton, boolean moveDownButton){
-            if(moveUpButton && gripper_wrist.getPosition() < REVTRIXBOT_GRIPPER_WRIST_MAX_UP_POS)
+            if(moveUpButton && gripper_wrist.getPosition() < REVTRIXBOT_GRIPPER_WRIST_MAX_DOWN_POS)
                 gripper_wrist.setPosition(gripper_wrist.getPosition()+0.01);
-            else if(moveDownButton && gripper_wrist.getPosition() > REVTRIXBOT_GRIPPER_WRIST_MAX_DOWN_POS)
+            else if(moveDownButton && gripper_wrist.getPosition() > REVTRIXBOT_GRIPPER_WRIST_MAX_UP_POS)
                 gripper_wrist.setPosition(gripper_wrist.getPosition()-0.01);
         }
 

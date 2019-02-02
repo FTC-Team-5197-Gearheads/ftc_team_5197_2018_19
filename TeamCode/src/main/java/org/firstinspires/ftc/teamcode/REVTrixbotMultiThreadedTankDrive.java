@@ -135,10 +135,10 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                    // getInMineralCraterCollectPosition(gamepad2.dpad_down);
                     //teleOpSingleButtonGrip(gamepad2.a);
 
-                    //teleOpRotateWrist(gamepad2.x, gamepad2.y);
+                    teleOpRotateWrist(gamepad2.x && mineralLifterWristStatus == RUNNING, gamepad2.y && mineralLifterWristStatus == RUNNING);
                     //teleOpRotateWristWithGamepadTriggers(gamepad2); //Doesn't work too well
-                    teleOpGrip(gamepad2.a, gamepad2.b);
-                    keepServoLevelToGround(gamepad2.x); //TODO test and refine this method
+                    //teleOpGrip(gamepad2.a, gamepad2.b);
+                    keepServoLevelToGround(gamepad2.b && mineralLifterWristStatus == RUNNING); //TODO test and refine this method
 
                 }
 
