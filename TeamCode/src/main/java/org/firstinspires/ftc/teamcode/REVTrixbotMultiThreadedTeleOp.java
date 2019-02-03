@@ -131,9 +131,9 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
                             break;
                         }
                         if(gamepad1.right_stick_y>0.0)
-                            moveRotations(1, (int)(lockedPositionInches)*LINEARSLIDE_COUNTS_PER_INCH);
+                            moveToRotationCount(0.75, (int)(lockedPositionInches-22.0)*LINEARSLIDE_COUNTS_PER_INCH);
                         else if(gamepad1.right_stick_y<0.0)
-                            moveRotations(1, -(int)(lockedPositionInches)*LINEARSLIDE_COUNTS_PER_INCH);
+                            moveToRotationCount(0.75, -(int)(lockedPositionInches-22.0)*LINEARSLIDE_COUNTS_PER_INCH);
                         break;
                 }
             }
