@@ -1,7 +1,7 @@
 /**
- * Meet 3 TeleOp code
+ * Meet ILT TeleOp code
  * @Author Lorenzo Pedroza
- * Date 1/7/18
+ * Date 2/03/19
  *
  */
 
@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "REVTrixbot Monrovia ILT TeleOp", group = "ILT")
 //@Disabled
-public class REVTrixbotMultiThreadedTankDrive extends OpMode {
+public class REVTrixbotMultiThreadedTeleOp extends OpMode {
 
     REVTrixbot robot = new REVTrixbot();
 
@@ -26,8 +26,27 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
     volatile private static String mineralLifterWristStatus = "Arm Wrist Status";
     volatile private static String mineralLifterGripperStatus = "Arm Gripper Status";
 
+    private static final String EXTENDER_LENGTH_LOCKED = "Length Locked";
+    private static double extenderLenght = 22.0; //TODO measure unextedned lenght
+    private static double lockedLenght = 0.0; //found in in method lockLenght()
+    private static final double ROBOT_EXTENDER_HEIGHT = 17.5; //TODO measure
+    private static final int LINEARSLIDE_COUNTS_PER_INCH = 100;
+    private static final int OPERABLE_ROTATIONS_FOR_LOCK = 5000; //TODO adjsut this too
+
     private static final String INITIALIZED = "INITIALIZED";
     private static final String RUNNING = "Running";
+    private static final String MOVING_TO_MINERAL_DEPOSIT_POS = "Moving to Mineral Deposit Pos";
+    private static final String MOVING_TO_MINERAL_COLLECT_POS = "Moving to Mineral Collect Pos";
+
+
+    final int LA_ARM_LIFTER_MINERAL_DEPOSIT_POS = 3100; //TODO figure out this value
+    final int LA_ARM_DEPOSIT_POS = 1000; //TODO and this value
+
+    final int LA_ARM_LIFTER_MINERAL_COLLECT_POS = 5000; //TODO figure out this value
+    final int LA_ARM_COLLECT_POS = 1300; //TODO and this value
+
+
+
 
     @Override
     public void init() {
@@ -55,73 +74,16 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                     mineralLifterArmRaiserStatus = "Stowing";
                     mineralLifterArmExtenderStatus = "Stowing";
                     mineralLifterWristStatus = "Stowing";
-                    mineralLifterGripperStatus = "Stowing";
+                    //mineralLifterGripperStatus = "Stowing";
                     super.teleOpFullyStowMTMineralLifter(laArmSpeed, laArmLifterSpeed, button);
                     mineralArmStatus = RUNNING;
                     mineralLifterArmRaiserStatus = RUNNING;
                     mineralLifterArmExtenderStatus = RUNNING;
                     mineralLifterWristStatus = RUNNING;
-                    mineralLifterGripperStatus = RUNNING;
+                    //mineralLifterGripperStatus = RUNNING;
                 }
             }
 
-            public void getInMineralCargoBayDropPosition(boolean button){ //macro
-                final int LA_ARM_LIFTER_MINERAL_DROP_POS = 3100; //TODO figure out this value
-                final int LA_ARM_DROP_POS = 10; //TODO and this value
-
-                if(gripper.getPosition() == GRIPPER_CLOSED && button) //only do once gripper closed with mineral. May need to add tolerance
-                {
-                    mineralArmStatus = "Moving to Mineral Drop Position";
-                    mineralLifterWristStatus = "Moving to Mineral Drop Position";
-                    mineralLifterGripperStatus = "Moving to Mineral Drop Position";
-                    mineralLifterArmExtenderStatus = "Moving to Mineral Drop Position";
-                    mineralLifterArmRaiserStatus = "Moving to Mineral Drop Position";
-                    //TODO tell the wrist to move parallel to linera actuator
-
-                    threadedLinearActuatorArm.moveToMinPos(0.3);
-
-                    threadedArmLifter.moveToRotationCount(0.3, LA_ARM_LIFTER_MINERAL_DROP_POS);
-                    threadedLinearActuatorArm.moveToRotationCount(0.3, LA_ARM_DROP_POS);
-                    //TODO tell wrist to move to drop position above cargo bay
-                }
-
-
-                mineralArmStatus = RUNNING;
-                mineralLifterWristStatus = RUNNING;
-                mineralLifterGripperStatus = RUNNING;
-                mineralLifterArmExtenderStatus = RUNNING;
-                mineralLifterArmRaiserStatus = RUNNING;
-
-            }
-
-            public void getInMineralCraterCollectPosition(boolean button){
-                if(button)
-                {
-                    mineralArmStatus = "Moving to Mineral Collect Position";
-                    mineralLifterWristStatus = "Moving to Mineral Collect Position";
-                    mineralLifterGripperStatus = "Moving to Mineral Collect Position";
-                    mineralLifterArmExtenderStatus = "Moving to Mineral Collect Position";
-                    mineralLifterArmRaiserStatus = "Moving to Mineral Collect Position";
-
-
-
-                    //TODO tell the wrist to move parallel to linear actuator arm
-                    threadedLinearActuatorArm.moveToMinPos(0.3);
-                    threadedArmLifter.moveToRotationCount(0.3, LIFTER_PARALLEL_TO_ROBOT_POSITION);
-                    //TODO tell the wrist to move down facing crater
-                    gripper.setPosition(GRIPPER_OPEN);
-
-
-                    mineralArmStatus = RUNNING;
-                    mineralLifterWristStatus = RUNNING;
-                    mineralLifterGripperStatus = RUNNING;
-                    mineralLifterArmExtenderStatus = RUNNING;
-                    mineralLifterArmRaiserStatus = RUNNING;
-                }
-
-
-
-            }
 
             @Override
             public void run() {
@@ -142,16 +104,57 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                     keepServoLevelToGround(gamepad2.b && mineralLifterWristStatus == RUNNING); //TODO test and refine this method
 
                 }
-
             }
         };
 
         robot.threadMineralLifter.threadedLinearActuatorArm = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedLinearActuatorArm(){
             @Override
             public void teleOpMoveWithJoystick(double joyStickDouble) {
-                if(mineralLifterArmExtenderStatus == RUNNING) //be sure no other method is using it
-                    super.teleOpMoveWithJoystick(joyStickDouble);
+                switch (mineralLifterArmExtenderStatus) {
+                    case RUNNING:
+                        super.teleOpMoveWithJoystick(joyStickDouble);
+                        break;
+                    case MOVING_TO_MINERAL_COLLECT_POS:
+                        moveToRotationCount(0.7, LA_ARM_COLLECT_POS); //go a little slower to prevent collisions by allowing the lifter to be ahead
+                        mineralLifterArmExtenderStatus = RUNNING;
+                        break;
+                    case MOVING_TO_MINERAL_DEPOSIT_POS:
+                        moveToRotationCount(0.7, LA_ARM_DEPOSIT_POS);
+                        mineralLifterArmExtenderStatus = RUNNING;
+                        break;
+                    case EXTENDER_LENGTH_LOCKED:
+                        double lockedPositionInches = (lockedLenght/Math.sin((double)(getMAXIMUM_ROTAIONS()-getCurrentPosition())*0.5)); //TODO find rotations per degree (convert rotations to angle in radians)
+                        //move to satisfy formulas and stuff(I'm working on it)
+                        if(getCurrentPosition()<OPERABLE_ROTATIONS_FOR_LOCK)
+                        {
+                            mineralLifterArmExtenderStatus = RUNNING;
+                            break;
+                        }
+                        if(gamepad1.right_stick_y>0.0)
+                            moveRotations(1, (int)(lockedPositionInches)*LINEARSLIDE_COUNTS_PER_INCH);
+                        else if(gamepad1.right_stick_y<0.0)
+                            moveRotations(1, -(int)(lockedPositionInches)*LINEARSLIDE_COUNTS_PER_INCH);
+                        break;
+                }
             }
+
+            public void lockLength(boolean lockButtonToggle){
+                if(lockButtonToggle)
+                {
+                    if(mineralLifterArmExtenderStatus == RUNNING) //not locked and running
+                    {
+                        mineralLifterArmExtenderStatus = EXTENDER_LENGTH_LOCKED; //then lock it
+                        extenderLenght = (double)(getCurrentPosition())/(double)(LINEARSLIDE_COUNTS_PER_INCH) + 22.0; //TODO adjust scale and find base he
+                        lockedLenght = Math.sqrt(Math.pow(extenderLenght, 2.0) - Math.pow(ROBOT_EXTENDER_HEIGHT, 2.0));
+                    }
+
+                    else if(mineralLifterArmExtenderStatus == EXTENDER_LENGTH_LOCKED) //locked
+                        mineralLifterArmExtenderStatus = RUNNING; //unlock it
+                }
+            }
+
+
+
 
             @Override
             public void run() {
@@ -159,13 +162,28 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                 mineralLifterArmExtenderStatus = RUNNING;
                 while (!isInterrupted()){
                     teleOpMoveWithJoystick(gamepad2.left_stick_y); //for Clinston Zeng's preference
+                    lockLength(gamepad2.left_bumper);//TODO test this 2nd
                     //teleOpMoveWithButtons(gamepad2.a, gamepad2.b, 1);
                 }
-
             }
         };
 
         robot.threadMineralLifter.threadedArmLifter = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedArmLifter(){
+            public void getInMineralCargoBayDropPosition(boolean button){ //set string flags to start a macro
+                if(button) //only do once gripper closed with mineral. May need to add tolerance
+                {
+                    mineralLifterArmExtenderStatus = MOVING_TO_MINERAL_DEPOSIT_POS;
+                    mineralLifterArmRaiserStatus = MOVING_TO_MINERAL_DEPOSIT_POS;
+                }
+            }
+
+            public void getInMineralCraterCollectPosition(boolean button){////set string flags to start a macro
+                if(button)
+                {
+                    mineralLifterArmExtenderStatus = MOVING_TO_MINERAL_COLLECT_POS;
+                    mineralLifterArmRaiserStatus = MOVING_TO_MINERAL_COLLECT_POS;
+                }
+            }
 
             @Override
             public void teleOpMoveToHighestPosition(double speed, boolean button) {
@@ -175,13 +193,23 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                     super.teleOpMoveToHighestPosition(speed, button);
                     mineralLifterArmRaiserStatus = RUNNING;
                 }
-
             }
 
             @Override
             public void teleOpMoveWithJoystick(double joyStickDouble) {
-                if(mineralLifterArmRaiserStatus == RUNNING) //do not move when other methods are using this actuator to avoid damage to the robot.
-                    super.teleOpMoveWithJoystick(joyStickDouble);
+                switch (mineralLifterArmRaiserStatus) {
+                    case RUNNING:
+                        super.teleOpMoveWithJoystick(joyStickDouble);
+                        break;
+                    case MOVING_TO_MINERAL_COLLECT_POS:
+                        moveToRotationCount(1.0, LA_ARM_LIFTER_MINERAL_COLLECT_POS);
+                        mineralLifterArmRaiserStatus = RUNNING;
+                        break;
+                    case MOVING_TO_MINERAL_DEPOSIT_POS:
+                        moveToRotationCount(1.0, LA_ARM_LIFTER_MINERAL_DEPOSIT_POS);
+                        mineralLifterArmRaiserStatus = RUNNING;
+                        break;
+                }
             }
 
             @Override
@@ -192,6 +220,8 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
                     //teleOpMoveToHighestPosition(0.3, gamepad1.y);
                     //teleOpMoveWithButtons(gamepad2.dpad_up, gamepad2.dpad_down, 1.0);
                     teleOpMoveWithJoystick(gamepad1.right_stick_y);
+                    getInMineralCargoBayDropPosition(gamepad1.dpad_up); //TODO test and tune these macros 1st
+                    getInMineralCraterCollectPosition(gamepad1.dpad_down);
                 }
             }
         };
@@ -221,7 +251,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
         telemetry.addData("   Raiser Status", mineralLifterArmRaiserStatus);
         telemetry.addData("   Extender Status", mineralLifterArmExtenderStatus);
         telemetry.addData("   Wrist Status", mineralLifterWristStatus);
-        telemetry.addData("   Gripper Status", mineralLifterGripperStatus);
+        //telemetry.addData("   Gripper Status", mineralLifterGripperStatus);
     }
 
     @Override
@@ -238,7 +268,7 @@ public class REVTrixbotMultiThreadedTankDrive extends OpMode {
         telemetry.addData("   Raiser Status", mineralLifterArmRaiserStatus);
         telemetry.addData("   Extender Status", mineralLifterArmExtenderStatus);
         telemetry.addData("   Wrist Status", mineralLifterWristStatus);
-        telemetry.addData("   Gripper Status", mineralLifterGripperStatus);
+        //telemetry.addData("   Gripper Status", mineralLifterGripperStatus);
     }
 
     @Override
