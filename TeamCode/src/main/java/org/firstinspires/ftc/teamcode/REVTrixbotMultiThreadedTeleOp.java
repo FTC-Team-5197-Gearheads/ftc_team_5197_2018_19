@@ -130,10 +130,8 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
                             mineralLifterArmExtenderStatus = RUNNING;
                             break;
                         }
-                        if(gamepad1.right_stick_y>0.0)
+                        if(gamepad1.right_stick_y != 0.0)
                             moveToRotationCount(0.75, (int)(lockedPositionInches-22.0)*LINEARSLIDE_COUNTS_PER_INCH);
-                        else if(gamepad1.right_stick_y<0.0)
-                            moveToRotationCount(0.75, -(int)(lockedPositionInches-22.0)*LINEARSLIDE_COUNTS_PER_INCH);
                         break;
                 }
             }
@@ -162,7 +160,7 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
                 mineralLifterArmExtenderStatus = RUNNING;
                 while (!isInterrupted()){
                     teleOpMoveWithJoystick(gamepad2.left_stick_y); //for Clinston Zeng's preference
-                    lockLength(gamepad2.left_bumper);//TODO test this 2nd
+                    //lockLength(gamepad2.left_bumper);//TODO test this 2nd
                     //teleOpMoveWithButtons(gamepad2.a, gamepad2.b, 1);
                 }
             }

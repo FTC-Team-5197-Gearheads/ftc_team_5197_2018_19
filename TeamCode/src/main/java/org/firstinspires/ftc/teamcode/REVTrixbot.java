@@ -199,7 +199,7 @@ public class REVTrixbot extends GenericFTCRobot
         public void keepServoLevelToGround(boolean overrideButton){ //TODO test this method
 
             double threadedArmLifterPosRatio = (((double) threadedArmLifter.getCurrentPosition())- FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS)/ FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS;
-            if((double)threadedArmLifter.getCurrentPosition() > FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS && !overrideButton)
+            if((double)threadedArmLifter.getCurrentPosition() > FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS+750 && !overrideButton)
                 gripper_wrist.setPosition(1.35 - threadedArmLifterPosRatio); //1.30
 
 
