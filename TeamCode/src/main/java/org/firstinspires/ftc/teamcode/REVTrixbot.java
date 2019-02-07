@@ -81,8 +81,8 @@ public class REVTrixbot extends GenericFTCRobot
 
     private static final String REVTRIXBOT_LA_ARM_LIFTER_MOTOR_NAME = "EH2motor0";
     private static final int REVTRIXBOT_LA_ARM_LIFTER_STOWED_ROTATIONS = 0;
-    private static final int REVTRIXBOT_LA_ARM_LIFTER_ERECT_ROTATIONS = 6225; //TODO increase for interleage
-    private static final double FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS = ((double)REVTRIXBOT_LA_ARM_LIFTER_ERECT_ROTATIONS)/2.0; //adjust the divisor for adjusting range of collector being level to ground
+    private static final int REVTRIXBOT_LA_ARM_LIFTER_ERECT_ROTATIONS = 6125; //Was 6225
+    private static final double FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS = (((double)REVTRIXBOT_LA_ARM_LIFTER_ERECT_ROTATIONS)*2.0)/3.0; //adjust the divisor for adjusting range of collector being level to ground
 
     private static final String REVTRIXBOT_LA_MOTOR_NAME = "EH2motor1";
     private static final int REVTRIXBOT_LA_RETRACTED_ROTATIONS = 0;
@@ -94,6 +94,7 @@ public class REVTrixbot extends GenericFTCRobot
 
     private static final String REVTRIXBOT_GRIPPER_WRIST_NAME = "EH2servo2";
     private static final double REVTRIXBOT_GRIPPER_WRIST_MAX_UP_POS = 0.0;
+    private static final double REVTRIXBOT_GRIPPER_WRIST_INIT_POS = 0.8;
     private static final double REVTRIXBOT_GRIPPER_WRIST_MAX_DOWN_POS = 1.0;
 
     private static final String REVTRIXBOT_TEAM_IDENTIFIER_DEPOSITOR_SERVO_NAME = "EH2servo5";
@@ -181,7 +182,7 @@ public class REVTrixbot extends GenericFTCRobot
             threadedLinearActuatorArm.initHardware(ahwMap);
             gripper = ahwMap.get(Servo.class, GRIPPER_SERVO_NAME);
             gripper_wrist = ahwMap.get(Servo.class, GRIPPER_WRIST_NAME);
-            gripper_wrist.setPosition(REVTRIXBOT_GRIPPER_WRIST_MAX_DOWN_POS);
+            gripper_wrist.setPosition(REVTRIXBOT_GRIPPER_WRIST_INIT_POS);
         }
 
         public void fullyStowMTMineralLifter(double laArmSpeed, double laArmLifterSpeed){ //macro only available in threaded version as while loops are not safe in linear code.
@@ -199,8 +200,8 @@ public class REVTrixbot extends GenericFTCRobot
         public void keepServoLevelToGround(boolean overrideButton){ //TODO test this method
 
             double threadedArmLifterPosRatio = (((double) threadedArmLifter.getCurrentPosition())- FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS)/ FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS;
-            if((double)threadedArmLifter.getCurrentPosition() > FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS+750 && !overrideButton)
-                gripper_wrist.setPosition(1.35 - threadedArmLifterPosRatio); //1.30
+            if((double)threadedArmLifter.getCurrentPosition() > FRACTION_OF_MAX_ARM_LIFTER_ROTATIONS && !overrideButton)
+                gripper_wrist.setPosition(threadedArmLifterPosRatio); //1.30
 
 
             /*

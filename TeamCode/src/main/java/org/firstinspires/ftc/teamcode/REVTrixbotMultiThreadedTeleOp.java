@@ -40,7 +40,7 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
 
 
     final int LA_ARM_LIFTER_MINERAL_DEPOSIT_POS = 3100; //TODO figure out this value
-    final int LA_ARM_DEPOSIT_POS = 1000; //TODO and this value
+    final int LA_ARM_DEPOSIT_POS = 1300; //TODO and this value
 
     final int LA_ARM_LIFTER_MINERAL_COLLECT_POS = 5000; //TODO figure out this value
     final int LA_ARM_COLLECT_POS = 1300; //TODO and this value
