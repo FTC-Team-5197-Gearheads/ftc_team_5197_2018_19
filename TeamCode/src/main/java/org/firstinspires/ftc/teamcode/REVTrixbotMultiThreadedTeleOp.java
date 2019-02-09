@@ -32,6 +32,7 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
     private static final double ROBOT_EXTENDER_HEIGHT = 17.5; //TODO measure
     private static final int LINEARSLIDE_COUNTS_PER_INCH = 100;
     private static final int OPERABLE_ROTATIONS_FOR_LOCK = 5000; //TODO adjsut this too
+    private static boolean MACROS_ENABLED = true;
 
     private static final String INITIALIZED = "INITIALIZED";
     private static final String RUNNING = "Running";
@@ -45,11 +46,14 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
     final int LA_ARM_LIFTER_MINERAL_COLLECT_POS = 5000; //TODO figure out this value
     final int LA_ARM_COLLECT_POS = 1300; //TODO and this value
 
-
-
+    public void macroToggle(boolean button){
+        if(button)
+            MACROS_ENABLED = false;
+    }
 
     @Override
     public void init() {
+        MACROS_ENABLED = true;
         robot.threadDT = new REVTrixbot.REVTrixbotMTDrivetrain(){
             @Override
             public void run() {
@@ -168,7 +172,7 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
 
         robot.threadMineralLifter.threadedArmLifter = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedArmLifter(){
             public void getInMineralCargoBayDropPosition(boolean button){ //set string flags to start a macro
-                if(button) //only do once gripper closed with mineral. May need to add tolerance
+                if(button && MACROS_ENABLED) //only do once gripper closed with mineral. May need to add tolerance
                 {
                     mineralLifterArmExtenderStatus = MOVING_TO_MINERAL_DEPOSIT_POS;
                     mineralLifterArmRaiserStatus = MOVING_TO_MINERAL_DEPOSIT_POS;
@@ -176,7 +180,7 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
             }
 
             public void getInMineralCraterCollectPosition(boolean button){////set string flags to start a macro
-                if(button)
+                if(button && MACROS_ENABLED)
                 {
                     mineralLifterArmExtenderStatus = MOVING_TO_MINERAL_COLLECT_POS;
                     mineralLifterArmRaiserStatus = MOVING_TO_MINERAL_COLLECT_POS;
@@ -185,7 +189,7 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
 
             @Override
             public void teleOpMoveToHighestPosition(double speed, boolean button) {
-                if(button)
+                if(button && MACROS_ENABLED)
                 {
                     mineralLifterArmRaiserStatus = "Moving to highest position";
                     super.teleOpMoveToHighestPosition(speed, button);
@@ -238,12 +242,13 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
         super.start();
         robot.threadMineralLifter.start();
         robot.threadDT.start();
-
+        resetStartTime();
     }
 
     @Override
     public void internalPostInitLoop() {
         super.internalPostInitLoop();
+        telemetry.addData("Macros Enabled", MACROS_ENABLED);
         telemetry.addData("Drivetrain Status", driveTrainStatus);
         telemetry.addData("Mineral Lifter Status", mineralArmStatus);
         telemetry.addData("   Raiser Status", mineralLifterArmRaiserStatus);
@@ -256,11 +261,13 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
     public void loop() {
        //robot.threadMineralLifter.teleOpSingleButtonGrip(gamepad2.a);
        //robot.threadMineralLifter.teleOpRotateWristWithGamepadTriggers(gamepad2.y, gamepad2.b);
+        macroToggle(gamepad1.right_bumper || gamepad2.right_bumper);
     }
 
     @Override
     public void internalPostLoop() {
         super.internalPostLoop();
+        telemetry.addData("Macros Enabled", MACROS_ENABLED);
         telemetry.addData("Drivetrain Status", driveTrainStatus);
         telemetry.addData("Mineral Lifter Status", mineralArmStatus);
         telemetry.addData("   Raiser Status", mineralLifterArmRaiserStatus);
