@@ -326,9 +326,9 @@ public class REVTrixbot extends GenericFTCRobot
 
         public void teleOpRotateWrist(boolean moveUpButton, boolean moveDownButton){
             if(moveUpButton && gripper_wrist.getPosition() < REVTRIXBOT_GRIPPER_WRIST_MAX_DOWN_POS)
-                gripper_wrist.setPosition(gripper_wrist.getPosition()+0.01);
+                gripper_wrist.setPosition(gripper_wrist.getPosition()+0.005);
             else if(moveDownButton && gripper_wrist.getPosition() > REVTRIXBOT_GRIPPER_WRIST_MAX_UP_POS)
-                gripper_wrist.setPosition(gripper_wrist.getPosition()-0.01);
+                gripper_wrist.setPosition(gripper_wrist.getPosition()-0.005);
         }
 
         public void teleOpRotateWristWithGamepadTriggers(Gamepad weaponsOfficerGamepead){ //needs to be properly tested. Not too responsive enough right now

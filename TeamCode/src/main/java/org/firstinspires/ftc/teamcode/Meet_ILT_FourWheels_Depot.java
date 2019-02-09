@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Meet ILT FourWheels Facing Depot Blue Crater Varient", group="REVTrixbot")
+@Autonomous(name="Meet ILT Depot Then Left", group="REVTrixbot")
 //@Disabled
 public class Meet_ILT_FourWheels_Depot extends LinearOpMode {
 
@@ -121,7 +121,7 @@ public class Meet_ILT_FourWheels_Depot extends LinearOpMode {
         robot.threadMineralLifter.threadedArmLifter = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedArmLifter(){
             private void manuallyGoToAndSetZeroPositionAfterLanding(double speed){ //need to do this manually as they are not yet limit switches
                 //manually move to zero position(need to put movement code)
-                motor.setTargetPosition(300); //TODO set target position
+                motor.setTargetPosition(600); //TODO set target position
                 motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 motor.setPower(-Math.abs(speed));
                 while(motor.isBusy()); //wait for motor to reach position
@@ -303,14 +303,16 @@ public class Meet_ILT_FourWheels_Depot extends LinearOpMode {
         robot.dt.encoderDrive(1, 17, 17);
         //sleep(1000);
         robot.dt.encoderDrive(1, 16, -16);
-        //sleep(1000);
+        //sleep(1000)
         robot.dt.encoderDrive(1, 28.3, 28.3);
         //sleep(1000);
         robot.dt.encoderDrive(1, 48.9, -48.9);
         //sleep(1000);
+        robot.dt.encoderDrive(1,-6,-6);
+        //sleep(1000);
         robot.idenfierFor5197Depositer.depositTeamIdentifier();
         //sleep(1000);
-        robot.dt.encoderDrive(1, 83, 83);
+        robot.dt.encoderDrive(1, 70, 70);
         //sleep(3000);
         //robot.dt.encoderDrive(1, 8, 8);
         //sleep(1000);

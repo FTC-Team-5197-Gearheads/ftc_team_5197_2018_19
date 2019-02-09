@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Meet ILT FourWheels Facing Depot Red Crater Varient", group="REVTrixbot")
+@Autonomous(name="Meet ILT Depot Then Right", group="REVTrixbot")
 //@Disabled
 public class Meet_ILTa_FourWheels_Depot extends LinearOpMode {
 

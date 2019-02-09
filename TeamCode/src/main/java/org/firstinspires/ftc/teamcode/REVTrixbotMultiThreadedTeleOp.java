@@ -102,10 +102,10 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
                    // getInMineralCraterCollectPosition(gamepad2.dpad_down);
                     //teleOpSingleButtonGrip(gamepad2.a);
 
-                    teleOpRotateWrist(gamepad2.x && mineralLifterWristStatus == RUNNING, gamepad2.y && mineralLifterWristStatus == RUNNING);
+                    teleOpRotateWrist(gamepad2.y && mineralLifterWristStatus == RUNNING, gamepad2.a && mineralLifterWristStatus == RUNNING);
                     //teleOpRotateWristWithGamepadTriggers(gamepad2); //Doesn't work too well
                     //teleOpGrip(gamepad2.a, gamepad2.b);
-                    keepServoLevelToGround(gamepad2.b && mineralLifterWristStatus == RUNNING); //TODO test and refine this method
+                    keepServoLevelToGround(gamepad2.right_bumper && mineralLifterWristStatus == RUNNING); //TODO test and refine this method
 
                 }
             }
@@ -261,7 +261,7 @@ public class REVTrixbotMultiThreadedTeleOp extends OpMode {
     public void loop() {
        //robot.threadMineralLifter.teleOpSingleButtonGrip(gamepad2.a);
        //robot.threadMineralLifter.teleOpRotateWristWithGamepadTriggers(gamepad2.y, gamepad2.b);
-        macroToggle(gamepad1.right_bumper || gamepad2.right_bumper);
+        macroToggle(gamepad1.right_bumper || gamepad2.left_bumper);
     }
 
     @Override
