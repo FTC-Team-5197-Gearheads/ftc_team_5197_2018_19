@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Meet ILT FourWheels Facing Crater", group="REVTrixbot")
-//@Disabled
-public class Meet_ILT_FourWheels_Crater extends LinearOpMode {
+@Autonomous(name="Meet ILT FourWheels Facing Crater Unpowered Landing", group="REVTrixbot")
+@Disabled
+public class Meet_ILT_EXPERIMENTAL_FourWheels_Crater_Unpowered_Landing extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private GoldMineralDetector_2 locator = null;
@@ -91,7 +91,7 @@ public class Meet_ILT_FourWheels_Crater extends LinearOpMode {
         robot.threadMineralLifter.threadedArmLifter = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedArmLifter(){
             private void manuallyGoToAndSetZeroPositionAfterLanding(double speed){ //need to do this manually as they are not yet limit switches
                 //manually move to zero position(need to put movement code)
-                motor.setTargetPosition(300); //TODO set target position
+                motor.setTargetPosition(700); //TODO set target position
                 motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 motor.setPower(-Math.abs(speed));
                 while(motor.isBusy()); //wait for motor to reach position
@@ -103,7 +103,7 @@ public class Meet_ILT_FourWheels_Crater extends LinearOpMode {
 
             private void unhookLiftingSupportPiece(double speed){ //need to do this manually as they are not yet limit switches
                 //manually move to zero position(need to put movement code)
-                motor.setTargetPosition(-500);
+                motor.setTargetPosition(-400);//500
                 motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 motor.setPower(-Math.abs(speed));
                 while(motor.isBusy()); //wait for motor to reach position
@@ -112,6 +112,7 @@ public class Meet_ILT_FourWheels_Crater extends LinearOpMode {
                 motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
+
 
             @Override
             public void run() {
@@ -123,11 +124,18 @@ public class Meet_ILT_FourWheels_Crater extends LinearOpMode {
                     e.printStackTrace();
                 }
                 unhookLiftingSupportPiece(1); //TODO decide if breaking is necesarry
-                moveToRotationCount(0.5, 3500);
+                //moveToRotationCount(0.5, 3500);
+                setBraking(false); //Attempting unpowered landing
                 //             moveRotations(1, 2500);//TO simulate falling/remove this when actually on lander.
+                try {
+                    sleep(1150); //TODO Test that time robot time to fall works with this delay
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 isLanded = true;
                 while(!isUnhooked); //wait for robot to unhookLiftingSupportPiece itself
                 mineralLifterStatus = "Retracting Arm";
+                setBraking(true);
                 manuallyGoToAndSetZeroPositionAfterLanding(0.7);//moveToMinPos(0.1);
                 /*
                 mineralLifterStatus = "Moving to highest position";

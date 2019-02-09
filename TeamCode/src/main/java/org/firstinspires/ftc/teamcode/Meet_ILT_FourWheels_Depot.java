@@ -34,9 +34,10 @@ import com.disnodeteam.dogecv.DogeCV;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Meet ILT FourWheels Facing Depot", group="REVTrixbot")
+@Autonomous(name="Meet ILT FourWheels Facing Depot Blue Crater Varient", group="REVTrixbot")
 //@Disabled
 public class Meet_ILT_FourWheels_Depot extends LinearOpMode {
 
@@ -109,7 +110,13 @@ public class Meet_ILT_FourWheels_Depot extends LinearOpMode {
         robot.dt.initHardware(hardwareMap);
         robot.idenfierFor5197Depositer.initHardware(hardwareMap);
 
-        robot.threadMineralLifter = new REVTrixbot.REVTrixbotMTMineralLifter();
+        robot.threadMineralLifter = new REVTrixbot.REVTrixbotMTMineralLifter(){
+            @Override
+            public void initHardware(HardwareMap ahwMap) { //do not init servos.
+                threadedArmLifter.initHardware(ahwMap);
+                threadedLinearActuatorArm.initHardware(ahwMap);
+            }
+        };
         robot.threadMineralLifter.threadedLinearActuatorArm = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedLinearActuatorArm();
         robot.threadMineralLifter.threadedArmLifter = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedArmLifter(){
             private void manuallyGoToAndSetZeroPositionAfterLanding(double speed){ //need to do this manually as they are not yet limit switches
@@ -291,15 +298,15 @@ public class Meet_ILT_FourWheels_Depot extends LinearOpMode {
 
     private void targetLeft()  {
         // build a profile to handle target on left
-        robot.dt.encoderDrive(1, -12.5, 12.5);
+        robot.dt.encoderDrive(1, -18, 18);
         //sleep(1000);
-        robot.dt.encoderDrive(1, 38, 38);
+        robot.dt.encoderDrive(1, 17, 17);
         //sleep(1000);
-        robot.dt.encoderDrive(1, 18, -18);
+        robot.dt.encoderDrive(1, 16, -16);
         //sleep(1000);
         robot.dt.encoderDrive(1, 28.3, 28.3);
         //sleep(1000);
-        robot.dt.encoderDrive(1, 20.8, -20.8);
+        robot.dt.encoderDrive(1, 48.9, -48.9);
         //sleep(1000);
         robot.idenfierFor5197Depositer.depositTeamIdentifier();
         //sleep(1000);
