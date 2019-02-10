@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.Random;
 
 @TeleOp(name = "LM Actuator Tester Program",group = "Tester Programs")
-//@Disabled
+@Disabled
 public class LimitedMotionActuatorTesterProgram extends LinearOpMode {
     Random random =  new Random();
     F310JoystickInputNames.ABXYButtons[] randomButton =

@@ -173,7 +173,6 @@ public class Meet_ILT_FourWheels_Crater extends LinearOpMode {
         //sleep(1000);
         sleep(1400);
 
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !done) {
             // lineup the camera on the right side
