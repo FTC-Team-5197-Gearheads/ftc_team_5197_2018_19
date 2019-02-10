@@ -51,7 +51,7 @@ import static org.firstinspires.ftc.teamcode.Round_1_Op.Pos.UNKNOWN;
 
 
 @TeleOp(name="Round 1 Operation", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class Round_1_Op extends LinearOpMode {
 
 
