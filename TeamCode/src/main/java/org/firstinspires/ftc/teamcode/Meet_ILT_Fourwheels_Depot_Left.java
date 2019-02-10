@@ -38,9 +38,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Meet ILT  Depot Then Left Faulty", group="REVTrixbot")
-@Disabled
-public class Meet_ILT_FourWheels_Depot extends LinearOpMode {
+@Autonomous(name="Meet ILT Depot Then Left", group="REVTrixbot")
+//@Disabled
+public class Meet_ILT_Fourwheels_Depot_Left extends LinearOpMode {
 
 
     // Declare OpMode members.
@@ -122,7 +122,7 @@ public class Meet_ILT_FourWheels_Depot extends LinearOpMode {
         robot.threadMineralLifter.threadedArmLifter = new REVTrixbot.REVTrixbotMTMineralLifter.ThreadedArmLifter(){
             private void manuallyGoToAndSetZeroPositionAfterLanding(double speed){ //need to do this manually as they are not yet limit switches
                 //manually move to zero position(need to put movement code)
-                motor.setTargetPosition(600); //TODO set target position
+                motor.setTargetPosition(300); //TODO set target position
                 motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 motor.setPower(-Math.abs(speed));
                 while(motor.isBusy()); //wait for motor to reach position
@@ -299,6 +299,7 @@ public class Meet_ILT_FourWheels_Depot extends LinearOpMode {
 
     private void targetLeft()  {
         // build a profile to handle target on left
+        // build a profile to handle target on left
         robot.dt.encoderDrive(1, -18, 18);
         //sleep(1000);
         robot.dt.encoderDrive(1, 17, 17);
@@ -347,7 +348,7 @@ public class Meet_ILT_FourWheels_Depot extends LinearOpMode {
 
     private void targetCenter() {
 
-        // build a profile to handle target on right
+        /// build a profile to handle target on right
         robot.dt.encoderDrive(1, -5, 5); //turn to gold
         //sleep(1000);
         robot.dt.encoderDrive(1, 30,30); //straight
