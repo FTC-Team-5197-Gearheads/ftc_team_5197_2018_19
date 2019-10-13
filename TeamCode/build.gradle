@@ -13,4 +13,5 @@ apply from: '../build.common.gradle'
 dependencies {
     api project(':DogeCV')
     api project(':openCVLibrary3')
+    api project(':HOMAR-FTC-Library')
 }
